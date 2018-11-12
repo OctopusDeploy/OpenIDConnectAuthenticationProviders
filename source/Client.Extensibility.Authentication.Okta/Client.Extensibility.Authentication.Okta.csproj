@@ -11,8 +11,8 @@
     <Description>Octopus Deploy Client Extensibility for Okta</Description>
     <PackageId>Octopus.Client.Extensibility.Authentication.Okta</PackageId>
     <PackageIconUrl>http://i.octopusdeploy.com/resources/Avatar3_360.png</PackageIconUrl>
-    <PackageLicenseUrl>https://octopus.com/</PackageLicenseUrl>
-    <PackageProjectUrl>https://octopus.com/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

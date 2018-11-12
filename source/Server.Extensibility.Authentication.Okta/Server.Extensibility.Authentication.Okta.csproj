@@ -6,6 +6,10 @@
     <RootNamespace>Octopus.Server.Extensibility.Authentication.Okta</RootNamespace>
     <AssemblyName>Octopus.Server.Extensibility.Authentication.Okta</AssemblyName>
     <Description>Octopus Deploy: Extensibility.Authentication.Okta</Description>
+    <Authors>Octopus Deploy</Authors>
+    <PackageIconUrl>http://i.octopusdeploy.com/resources/Avatar3_360.png</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

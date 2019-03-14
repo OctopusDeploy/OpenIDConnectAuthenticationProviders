@@ -13,14 +13,14 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Configuration
         public override string Id => GoogleAppsConfigurationStore.SingletonId;
         public override string Description => "GoogleApps authentication settings";
 
-        public override IEnumerable<ConfigurationValue> GetConfigurationValues()
+        public override IEnumerable<IConfigurationValue> GetConfigurationValues()
         {
             foreach (var configurationValue in base.GetConfigurationValues())
             {
                 yield return configurationValue;
             }
 
-            yield return new ConfigurationValue($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.HostedDomain", ConfigurationDocumentStore.GetHostedDomain(), ConfigurationDocumentStore.GetIsEnabled(), "Hosted Domain");
+            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.HostedDomain", ConfigurationDocumentStore.GetHostedDomain(), ConfigurationDocumentStore.GetIsEnabled(), "Hosted Domain");
         }
     }
 }

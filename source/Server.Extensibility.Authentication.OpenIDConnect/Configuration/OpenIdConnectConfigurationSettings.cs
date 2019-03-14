@@ -16,18 +16,18 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Configuratio
 
         public override string ConfigurationSetName => ConfigurationDocumentStore.ConfigurationSettingsName;
 
-        public override IEnumerable<ConfigurationValue> GetConfigurationValues()
+        public override IEnumerable<IConfigurationValue> GetConfigurationValues()
         {
             var configurationSettingsName = ConfigurationDocumentStore.ConfigurationSettingsName;
             var isEnabled = ConfigurationDocumentStore.GetIsEnabled();
 
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.IsEnabled", isEnabled.ToString(), isEnabled, "Is Enabled");
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.Issuer", ConfigurationDocumentStore.GetIssuer(), isEnabled, "Issuer");
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.ClientId", ConfigurationDocumentStore.GetClientId(), isEnabled, "ClientId", true);
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.Scope", ConfigurationDocumentStore.GetScope(), isEnabled && ConfigurationDocumentStore.GetScope() != OpenIDConnectConfiguration.DefaultScope, "Scope");
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.RedirectUri", ConfigurationDocumentStore.RedirectUri, isEnabled, "RedirectUri");
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.NameClaimType", ConfigurationDocumentStore.GetNameClaimType(), isEnabled && ConfigurationDocumentStore.GetNameClaimType() != OpenIDConnectConfiguration.DefaultNameClaimType, "Name Claim Type");
-            yield return new ConfigurationValue($"Octopus.{configurationSettingsName}.AllowAutoUserCreation", ConfigurationDocumentStore.GetAllowAutoUserCreation().ToString(), isEnabled, "Allow auto user creation");
+            yield return new ConfigurationValue<bool>($"Octopus.{configurationSettingsName}.IsEnabled", isEnabled, isEnabled, "Is Enabled");
+            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.Issuer", ConfigurationDocumentStore.GetIssuer(), isEnabled, "Issuer");
+            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.ClientId", ConfigurationDocumentStore.GetClientId(), isEnabled, "ClientId", true);
+            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.Scope", ConfigurationDocumentStore.GetScope(), isEnabled && ConfigurationDocumentStore.GetScope() != OpenIDConnectConfiguration.DefaultScope, "Scope");
+            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.RedirectUri", ConfigurationDocumentStore.RedirectUri, isEnabled, "RedirectUri");
+            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.NameClaimType", ConfigurationDocumentStore.GetNameClaimType(), isEnabled && ConfigurationDocumentStore.GetNameClaimType() != OpenIDConnectConfiguration.DefaultNameClaimType, "Name Claim Type");
+            yield return new ConfigurationValue<bool>($"Octopus.{configurationSettingsName}.AllowAutoUserCreation", ConfigurationDocumentStore.GetAllowAutoUserCreation(), isEnabled, "Allow auto user creation");
         }
 
         public override void BuildMappings(IResourceMappingsBuilder builder)

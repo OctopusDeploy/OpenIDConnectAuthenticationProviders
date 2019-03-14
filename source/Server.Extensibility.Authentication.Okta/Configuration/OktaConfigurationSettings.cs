@@ -13,13 +13,13 @@ namespace Octopus.Server.Extensibility.Authentication.Okta.Configuration
         public override string Id => OktaConfigurationStore.SingletonId;
         public override string Description => "Okta authentication settings";
 
-        public override IEnumerable<ConfigurationValue> GetConfigurationValues()
+        public override IEnumerable<IConfigurationValue> GetConfigurationValues()
         {
             foreach (var configurationValue in base.GetConfigurationValues())
             {
                 yield return configurationValue;
             }
-            yield return new ConfigurationValue($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != OktaConfiguration.DefaultRoleClaimType, "Role Claim Type");
+            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != OktaConfiguration.DefaultRoleClaimType, "Role Claim Type");
         }
     }
 }

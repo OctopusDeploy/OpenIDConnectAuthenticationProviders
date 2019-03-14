@@ -30,6 +30,11 @@ namespace Octopus.Server.Extensibility.Authentication.Okta.Configuration
                 ConfigurationStore.Value.SetRoleClaimType(v);
                 Log.Info($"{ConfigurationSettingsName} RoleClaimType set to: {v}");
             });
+            yield return new ConfigureCommandOption($"{ConfigurationSettingsName}UsernameClaimType=", "Tell Octopus how to find the value for the Octopus Username in the Okta token. Defaults to \"preferred_username\" if left blank.", v =>
+            {
+                ConfigurationStore.Value.SetUsernameClaimType(v);
+                Log.Info($"{ConfigurationSettingsName} UsernameClaimType set to: {v}");
+            });
         }
     }
 }

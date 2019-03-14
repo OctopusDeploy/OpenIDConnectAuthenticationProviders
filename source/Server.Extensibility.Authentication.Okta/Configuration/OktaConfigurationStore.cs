@@ -15,5 +15,15 @@ namespace Octopus.Server.Extensibility.Authentication.Okta.Configuration
             IConfigurationStore configurationStore) : base(configurationStore)
         {
         }
+
+        public string GetUsernameClaimType()
+        {
+            return GetProperty(doc => doc.UsernameClaimType);
+        }
+
+        public void SetUsernameClaimType(string usernameClaimType)
+        {
+            SetProperty(doc => doc.UsernameClaimType = usernameClaimType);
+        }
     }
 }

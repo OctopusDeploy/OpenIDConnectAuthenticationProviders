@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <RootNamespace>Octopus.Server.Extensibility.Authentication.GoogleApps</RootNamespace>
     <AssemblyName>Octopus.Server.Extensibility.Authentication.GoogleApps</AssemblyName>
     <Description>Octopus Deploy: Extensibility.Authentication.GoogleApps</Description>

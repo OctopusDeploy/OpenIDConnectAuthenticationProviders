@@ -42,8 +42,8 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic, roleIds: new[] {"octoTesters"});
-            var issuerConfig = new IssuerConfiguration() {Issuer = DefaultIssuer };
-            var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
+            var key = new Dictionary<string, AsymmetricSecurityKey>() {{KeyId, rsaSecurityKeyPublic}};
 
             var request = CreateRequest(token);
 
@@ -73,8 +73,8 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic, groupIds: new[] {"octoTesters"});
-            var issuerConfig = new IssuerConfiguration() {Issuer = DefaultIssuer };
-            var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
+            var key = new Dictionary<string, AsymmetricSecurityKey>() {{KeyId, rsaSecurityKeyPublic}};
 
             var request = CreateRequest(token);
 
@@ -104,8 +104,8 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic, groupIds: new[] {"octoTesters"});
-            var issuerConfig = new IssuerConfiguration() {Issuer = DefaultIssuer };
-            var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
+            var key = new Dictionary<string, AsymmetricSecurityKey>() {{KeyId, rsaSecurityKeyPublic}};
 
             var request = CreateRequest(token);
 
@@ -137,8 +137,8 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic, roleIds: new[] {"octoTestersRole"}, groupIds: new[] {"octoTestersGroup"});
-            var issuerConfig = new IssuerConfiguration() {Issuer = DefaultIssuer };
-            var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
+            var key = new Dictionary<string, AsymmetricSecurityKey>() {{KeyId, rsaSecurityKeyPublic}};
 
             var request = CreateRequest(token);
 
@@ -161,6 +161,11 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             Assert.IsNotNull(result.ExternalGroupIds);
             Assert.That(result.ExternalGroupIds.SingleOrDefault(x => x == "octoTestersRole"), Is.Not.Null.And.Not.Empty);
             Assert.That(result.ExternalGroupIds.SingleOrDefault(x => x == "octoTestersGroup"), Is.Not.Null.And.Not.Empty);
+        }
+
+        static IssuerConfiguration BuildCertificateIssuerConfiguration()
+        {
+            return new IssuerConfiguration {Issuer = DefaultIssuer, JwksUri = "https://some-jwks-uri/"};
         }
     }
 }

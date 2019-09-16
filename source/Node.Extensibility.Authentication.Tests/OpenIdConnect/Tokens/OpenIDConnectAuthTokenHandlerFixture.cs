@@ -44,8 +44,8 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic);
-            var issuerConfig = new IssuerConfiguration() {Issuer = DefaultIssuer };
-            var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
+            var key = new Dictionary<string, AsymmetricSecurityKey> {{KeyId, rsaSecurityKeyPublic}};
 
             var request = CreateRequest(token);
 
@@ -59,7 +59,7 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => (string)pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => (string) pair.Value?.FirstOrDefault()), out var stateString);
             var state = JsonConvert.DeserializeObject<LoginState>(stateString);
 
             // Assert
@@ -76,7 +76,6 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
 
         }
 
-
         [Test]
         public async Task ShouldRetryWhenInvalidKeyDetected()
         {
@@ -86,7 +85,7 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
 
             var token = CreateToken("99a8e79fba13856b4159f96e9c9ea6d5", out rsaSecurityKeyStale);
             token = CreateToken(KeyId, out rsaSecurityKeyCurrent);
-            var issuerConfig = new IssuerConfiguration() { Issuer = DefaultIssuer };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
             var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyCurrent } };
             var staleKey = new Dictionary<string, AsymmetricSecurityKey>() { { "99a8e79fba13856b4159f96e9c9ea6d5", rsaSecurityKeyStale } };
 
@@ -135,7 +134,7 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
 
             var token = CreateToken("99a8e79fba13856b4159f96e9c9ea6d5", out rsaSecurityKeyStale);
             token = CreateToken(KeyId, out rsaSecurityKeyCurrent);
-            var issuerConfig = new IssuerConfiguration() { Issuer = DefaultIssuer };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
             var staleKey = new Dictionary<string, AsymmetricSecurityKey>() { { "99a8e79fba13856b4159f96e9c9ea6d5", rsaSecurityKeyStale } };
 
             var request = CreateRequest(token);
@@ -165,7 +164,7 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
             // Arrange
             RsaSecurityKey rsaSecurityKeyPublic;
             var token = CreateToken(KeyId, out rsaSecurityKeyPublic, issuer: issuer, clientId: clientId);
-            var issuerConfig = new IssuerConfiguration() { Issuer = DefaultIssuer };
+            var issuerConfig = BuildCertificateIssuerConfiguration();
             var key = new Dictionary<string, AsymmetricSecurityKey>() { { KeyId, rsaSecurityKeyPublic } };
 
             var request = CreateRequest(token);
@@ -184,6 +183,11 @@ namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
 
             // Expect Exception Thrown
 
+        }
+
+        static IssuerConfiguration BuildCertificateIssuerConfiguration()
+        {
+            return new IssuerConfiguration {Issuer = DefaultIssuer, JwksUri = "https://some-jwks-uri/"};
         }
     }
 }

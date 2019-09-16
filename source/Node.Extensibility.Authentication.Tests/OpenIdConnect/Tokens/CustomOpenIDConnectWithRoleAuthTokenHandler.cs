@@ -6,7 +6,7 @@ using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tokens;
 
 namespace Node.Extensibility.Authentication.Tests.OpenIdConnect.Tokens
 {
-    public class CustomOpenIDConnectWithRoleAuthTokenHandler : OpenIDConnectAuthTokenWithRolesHandler<IOpenIDConnectConfigurationWithRoleStore, IKeyRetriever>
+    public class CustomOpenIDConnectWithRoleAuthTokenHandler : OpenIDConnectAuthTokenWithRolesHandler<IOpenIDConnectConfigurationWithRoleStore, IKeyRetriever, IIdentityProviderConfigDiscoverer>
     { 
         public CustomOpenIDConnectWithRoleAuthTokenHandler(ILog log, IOpenIDConnectConfigurationWithRoleStore configurationStore, IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer, IKeyRetriever keyRetriever) : base(log, configurationStore, identityProviderConfigDiscoverer, keyRetriever)
         {

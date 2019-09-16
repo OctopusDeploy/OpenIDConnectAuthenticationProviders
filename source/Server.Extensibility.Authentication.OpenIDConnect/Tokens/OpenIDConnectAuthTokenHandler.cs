@@ -8,14 +8,15 @@ using Octopus.Node.Extensibility.Authentication.OpenIDConnect.Tokens;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tokens
 {
-    public abstract class OpenIDConnectAuthTokenHandler<TStore, TRetriever> : AuthTokenHandler<TStore, TRetriever>, IAuthTokenHandler
+    public abstract class OpenIDConnectAuthTokenHandler<TStore, TRetriever, TDiscoverer> : AuthTokenHandler<TStore, TRetriever, TDiscoverer>, IAuthTokenHandler
         where TStore : IOpenIDConnectConfigurationStore
         where TRetriever : IKeyRetriever
+        where TDiscoverer : IIdentityProviderConfigDiscoverer
     {
         protected OpenIDConnectAuthTokenHandler(
             ILog log,
             TStore configurationStore,
-            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
+            TDiscoverer identityProviderConfigDiscoverer,
             TRetriever keyRetriever) : base(configurationStore, identityProviderConfigDiscoverer, keyRetriever, log)
         {
         }

@@ -3,7 +3,7 @@ using Octopus.Node.Extensibility.Authentication.OpenIDConnect.Issuer;
 
 namespace Octopus.Server.Extensibility.Authentication.OctopusID
 {
-    public class OctopusIdConfigDiscoverer : IIdentityProviderConfigDiscoverer
+    public class OctopusIdConfigDiscoverer : IOctopusIdentityProviderConfigDiscoverer
     {
         public Task<IssuerConfiguration> GetConfigurationAsync(string issuer)
         {

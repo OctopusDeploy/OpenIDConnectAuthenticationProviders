@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Octopus.Node.Extensibility.Authentication.OpenIDConnect;
 using Octopus.Node.Extensibility.Authentication.OpenIDConnect.Certificates;
-using Octopus.Node.Extensibility.Authentication.OpenIDConnect.Issuer;
 using Octopus.Server.Extensibility.Authentication.Extensions;
 using Octopus.Server.Extensibility.Authentication.Extensions.Identities;
 using Octopus.Server.Extensibility.Authentication.OctopusID.Configuration;
@@ -26,7 +25,7 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID
         {
             base.Load(builder);
 
-            builder.RegisterType<OctopusIdConfigDiscoverer>().As<IIdentityProviderConfigDiscoverer>().SingleInstance();
+            builder.RegisterType<OctopusIdConfigDiscoverer>().As<IOctopusIdentityProviderConfigDiscoverer>().InstancePerDependency();
 
             builder.RegisterType<OctopusIDDatabaseInitializer>().As<IExecuteWhenDatabaseInitializes>().InstancePerDependency();
             builder.RegisterType<OctopusIDPrincipalToUserResourceMapper>().As<IOctopusIDPrincipalToUserResourceMapper>().InstancePerDependency();

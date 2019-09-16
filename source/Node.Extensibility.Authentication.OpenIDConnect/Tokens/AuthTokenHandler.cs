@@ -13,19 +13,20 @@ using Octopus.Diagnostics;
 
 namespace Octopus.Node.Extensibility.Authentication.OpenIDConnect.Tokens
 {
-    public abstract class AuthTokenHandler<TStore, TRetriever>
+    public abstract class AuthTokenHandler<TStore, TRetriever, TDiscoverer>
         where TStore : IOpenIDConnectConfigurationStore
         where TRetriever : IKeyRetriever
+        where TDiscoverer : IIdentityProviderConfigDiscoverer
     {
         static string[] hmacAlgorithms = {SecurityAlgorithms.HmacSha256, SecurityAlgorithms.HmacSha384, SecurityAlgorithms.HmacSha512};
         
-        readonly IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer;
+        readonly TDiscoverer identityProviderConfigDiscoverer;
         readonly TRetriever keyRetriever;
         protected readonly ILog Log;
         protected readonly TStore ConfigurationStore;
 
         protected AuthTokenHandler(TStore configurationStore,
-            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
+            TDiscoverer identityProviderConfigDiscoverer,
             TRetriever keyRetriever,
             ILog log)
         {

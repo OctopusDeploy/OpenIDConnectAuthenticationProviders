@@ -13,7 +13,7 @@ namespace Octopus.Node.Extensibility.Authentication.OpenIDConnect.Identities
         {
             return new Identity(ProviderName)
                 .WithClaim(ClaimDescriptor.EmailClaimType, email, true)
-                .WithClaim(ClaimDescriptor.DisplayNameClaimType, displayName, true)
+                .WithClaim(ClaimDescriptor.DisplayNameClaimType, displayName, false)
                 .WithClaim(ExternalIdClaimType, externalId, true, true);
         }
     }

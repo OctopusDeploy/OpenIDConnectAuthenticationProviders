@@ -12,6 +12,7 @@
     <PackageReference Include="Assent" Version="1.3.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Server.Extensibility.Authentication.OctopusID\Server.Extensibility.Authentication.OctopusID.csproj" />
     <ProjectReference Include="..\Server.Extensibility.Authentication.OpenIDConnect\Server.Extensibility.Authentication.OpenIDConnect.csproj" />
   </ItemGroup>
 </Project>

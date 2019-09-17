@@ -7,10 +7,10 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID
     {
         public Task<IssuerConfiguration> GetConfigurationAsync(string issuer)
         {
-            return Task.FromResult(new IssuerConfiguration()
+            return Task.FromResult(new IssuerConfiguration
             {
-                Issuer = issuer + "/", // NOTE: the trailing / is important!
-                AuthorizationEndpoint = issuer + "/oauth2/authorize"
+                Issuer = issuer.WithTrailingSlash(),
+                AuthorizationEndpoint = $"{issuer.WithoutTrailingSlash()}/oauth2/authorize"
             });
         }
     }

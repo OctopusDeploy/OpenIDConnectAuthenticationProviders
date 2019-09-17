@@ -13,7 +13,7 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Web
         public OctopusIDUserAuthenticationAction(
             ILog log,
             IOctopusIDConfigurationStore configurationStore, 
-            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer, 
+            IOctopusIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer, 
             IOctopusIDAuthorizationEndpointUrlBuilder urlBuilder,
             IApiActionModelBinder modelBinder,
             IAuthenticationConfigurationStore authenticationConfigurationStore) : base(log, configurationStore, identityProviderConfigDiscoverer, urlBuilder, modelBinder, authenticationConfigurationStore)

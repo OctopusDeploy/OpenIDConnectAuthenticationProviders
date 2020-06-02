@@ -1,0 +1,17 @@
+{
+  "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.KeyDetails[], Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+  "$values": [
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "zK8PHf_6V3G5rU-viUOL1HvAYn7q--dxMoUkt7x1rSWX6fimla-lpoYAKhFTLUELkRKy_6UDzfybz0P9eItqS2UxVWYpKYmKTQ08HgUBUde4GtO_B0SkSk8iLtGh653UBBjgXmfzdfQEz_DsaWn7BMtuAhY9hpMtJye8LQlwaS8ibQrsC0j0GZM5KXRITHwfx06_T1qqC_MOZRA6iJs-J2HNlgeyFuoQVBTY6pRqGXa-qaVsSG3iU-vqNIciFquIq-xydwxLqZNksRRer5VAsSHf0eD3g2DX-cf6paSy1aM40svO9EfSvG_07MuHafEE44RFvSZZ4ubEN9U7ALSjdw",
+      "Exponent": "AQAB",
+      "Kid": "fb8ca5b7d8d9a5c6c6788071e866c6c40f3fc1f9"
+    },
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "wl6TaY_3dsuLczYH_hioeQ5JjcLKLGYb--WImN9_IKMkOj49dgs25wkjsdI9XGJYhhPJLlvfjIfXH49ZGA_XKLx7fggNaBRZcj1y-I3_77tVa9N7An5JLq3HT9XVt0PNTq0mtX009z1Hva4IWZ5IhENx2rWlZOfFAXiMUqhnDc8VY3lG7vr8_VG3cw3XRKvlZQKbb6p2YIMFsUwaDGL2tVF4SkxpxIazUYfOY5lijyVugNTslOBhlEMq_43MZlkznSrbFx8ToQ2bQX4Shj-r9pLyofbo6A7K9mgWnQXGY5rQVLPYYRzUg0ThWDzwHdgxYC5MNxKyQH4RC2LPv3U0LQ",
+      "Exponent": "AQAB",
+      "Kid": "492710a7fcdb153960ce01f760520a32c8455dff"
+    }
+  ]
+}

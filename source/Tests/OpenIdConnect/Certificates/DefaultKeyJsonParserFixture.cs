@@ -42,6 +42,17 @@ namespace Tests.OpenIdConnect.Certificates
             this.Assent(FormattedResult(result));
         }
 
+        [Test]
+        public void ShouldParseSupportedJwks_Ping()
+        {
+            // Source: https://secure.helpscout.net/conversation/1171176136/64935
+            var content = LoadJwksContent(nameof(ShouldParseSupportedJwks_Ping));
+
+            var result = new DefaultKeyJsonParser().Parse(content);
+
+            this.Assent(FormattedResult(result));
+        }
+
         static string FormattedResult(KeyDetails[] result)
         {
             return JsonConvert.SerializeObject(result, Formatting.Indented, new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.All});

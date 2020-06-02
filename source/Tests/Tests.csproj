@@ -22,5 +22,6 @@
     <EmbeddedResource Include="OpenIdConnect\Certificates\DefaultKeyJsonParserFixture.ShouldParseSupportedJwks_AzureAD.jwks.json" />
     <EmbeddedResource Include="OpenIdConnect\Certificates\DefaultKeyJsonParserFixture.ShouldParseSupportedJwks_Google.jwks.json" />
     <EmbeddedResource Include="OpenIdConnect\Certificates\DefaultKeyJsonParserFixture.ShouldParseSupportedJwks_Okta.jwks.json" />
+    <EmbeddedResource Include="OpenIdConnect\Certificates\DefaultKeyJsonParserFixture.ShouldParseSupportedJwks_Ping.jwks.json" />
   </ItemGroup>
 </Project>

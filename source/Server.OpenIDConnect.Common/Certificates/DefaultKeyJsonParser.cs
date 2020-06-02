@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -6,31 +7,47 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
 {
     public class DefaultKeyJsonParser : IKeyJsonParser
     {
+        /// <summary>
+        /// https://tools.ietf.org/html/rfc7517#section-4.1
+        /// </summary>
+        const string RsaKeyType = "RSA";
+
+        /// <summary>
+        /// https://tools.ietf.org/html/rfc7517#section-4.2
+        /// </summary>
+        const string Signature = "sig";
+
         public KeyDetails[] Parse(string content)
         {
             var keyData = JsonConvert.DeserializeObject<IssuerKeys>(content);
 
             return keyData.Keys
+                .Where(IsRsaKeyForSigning)
                 .Select(ConvertIssuerKeyToDetails)
                 .ToArray();
         }
 
-        static KeyDetails ConvertIssuerKeyToDetails(IssuerKey cert)
+        bool IsRsaKeyForSigning(IssuerKey key)
         {
-            if (cert.x509Chain != null && cert.x509Chain.Any())
+            return key.KeyType == RsaKeyType && key.PublicKeyUse == Signature;
+        }
+
+        static KeyDetails ConvertIssuerKeyToDetails(IssuerKey key)
+        {
+            if (key.x509Chain != null && key.x509Chain.Any())
             {
                 return new CertificateDetails
                 {
-                    Kid = cert.KeyId,
-                    Certificate = cert.x509Chain.First()
+                    Kid = key.KeyId,
+                    Certificate = key.x509Chain.First()
                 };
             }
 
             return new RsaDetails
             {
-                Kid = cert.KeyId,
-                Exponent = cert.Exponent,
-                Modulus = cert.Modulus
+                Kid = key.KeyId,
+                Exponent = key.Exponent,
+                Modulus = key.Modulus
             };
         }
 
@@ -41,6 +58,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
 
         public class IssuerKey
         {
+            [JsonProperty("kty")]
+            public string KeyType { get; set; }
+
+            [JsonProperty("use")]
+            public string PublicKeyUse { get; set; }
+
             [JsonProperty("kid")]
             public string KeyId { get; set; }
 

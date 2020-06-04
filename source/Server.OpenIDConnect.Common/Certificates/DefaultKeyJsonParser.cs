@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -38,6 +37,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
                 };
             }
 
+            if (key.Exponent == null || key.Modulus == null)
+                throw new UnsupportedJsonWebKeyFormatException($"Failed to parse JSON Web Key (\"kid\": \"{key.KeyId}\"): expected an RSA key with X.509 Certificate Chain, or exponent and modulus.");
+
             return new RsaDetails
             {
                 Kid = key.KeyId,
@@ -64,6 +66,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
 
             [JsonProperty("e")]
             public string Exponent { get; set; }
+
             [JsonProperty("n")]
             public string Modulus { get; set; }
 

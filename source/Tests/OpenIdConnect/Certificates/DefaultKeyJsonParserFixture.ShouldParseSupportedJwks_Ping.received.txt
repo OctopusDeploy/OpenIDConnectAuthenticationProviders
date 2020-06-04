@@ -1,0 +1,29 @@
+{
+  "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.KeyDetails[], Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+  "$values": [
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "kZ3TEh6j93bWSR1Fpkgam2SiBIohC4_KCeUYd-_uUM6jDQZic5pOEvHWxL-sc3Mg4Zx4c5Qn_Lw5BVPtyY2BSDLiQwTCD8RpGX7MgQllgd9TM64PblyE6HPMgCOqIOxDHq-QJL1IlA80OM8Hlf7Ze-YQPeKxfTBpfuw4KcNxblo3G5pNq8tFDjoBqE4E3mOv8Ay1b0KnZZTfxQ-FqXLEynysRFNGZ-cWyvRRCD_1S8f5BppBJq6lnlSwLg5MvFwLd5vCFx_WShYv-pTy2kUascEVnLdTo0WAZcVpUkFaRL5G_TrQe-pe892hF3EYl2I9uVUXjQTlmlB-x2o5MZGFcw",
+      "Exponent": "AQAB",
+      "Kid": "da7wFyqmnDaQ1WKEhXZ-A6rYqSA"
+    },
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "qxCiLX5H67U4d30Mt3DATMpdyIAxsnTfRPivB0RXA93udke6i22BTHHA16ZkBvPeiQOOFirhTmz5SOVib4BoKKPQ4druxOXK8nw9Rb_sppMkWweuE7MqU7vjOAaoHHfxV4Q259H-uU48t2cvLMgYIu7Bjx4j0Trgx_SxQt5MKbIH0Fm0fzgwAzL3-MZ45QpM7ZQNMtrmh33HucM_fQ7kL3eu9M2l50ArnazqwFwwr8sIRexwG5bK_tqDpMiaU1Wd2DSbG1K3Bz2lM7o8MUipJuM1JrvFZmZ28siJsOv5V6qXxsrtEXv6_FnnGsLt0wbG5fafg1jxBGhbjpM1JHNITw",
+      "Exponent": "AQAB",
+      "Kid": "P4QmQdazhOEZ6ESp3Ox50SdbHaU"
+    },
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "ie0wE0bn1pQ0xEeM5-2_I3aMt_eDI7oyCClCyU1faMeQkzDTAp6FLnqSD99Ryb-dheGObooPWm1JxxKU8gvoNl2k7OVNYcyZUsaBmvCLn1RWsBOpULojgjwdAH9WeKEXzNJVBwnGy_MZaRxC10-DVe36tIzhAzqo_I5WC-LKIb5l1MTbXjMVGltuQyVd-TrLhKunsXXBC7pwIEw2hh7XT9eeg8Hm4vYj1Urj44JsbNxKQ1JHEt4qG3RKAEJAipi9uSE8L8cnxTEHkqC9g1uomghazyNc17XMofTTzy7d0ZavRpIfnUID0YAAQihYBJCJP2pQn-lAfRQgjnBdCDZjRQ",
+      "Exponent": "AQAB",
+      "Kid": "gvqsO-tegUGtLWrVeFtRDjwCzhE"
+    },
+    {
+      "$type": "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates.RsaDetails, Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common",
+      "Modulus": "r4kVtn4i4caKzmn20VaPVyh6kBst2nObPejmkHRysyNtt06ttC0YwJpyGqeOFIl-pvDzXWfxFIOHpm25w1rotV47Sh6VT6zsZBUXUY3Go0_3pCacZO6HVNytCZvxHzA8Wtxzvc8Jri9dQzL0SYs_FKGzgyPNebprUepSVjtM-maS9suqokTcZ_7dizR5IhslDVLPPmmdGHqdwUIP4q75VguVPpDAQrSWLj_mvvqFSuA05XwJoGanWE612oCTBj2hMftyVNwi86PVXKZgPI5TM3cMpTrckXSgfGb-3Ls0cde5VlUrQI8v0Fo-ygAuTF9orSj6E5t3mJCZ6AaxuKcz0w",
+      "Exponent": "AQAB",
+      "Kid": "j4hQX_PyMw_SU1EJIhwEIt2jVSM"
+    }
+  ]
+}

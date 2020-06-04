@@ -12,24 +12,19 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
         /// </summary>
         const string RsaKeyType = "RSA";
 
-        /// <summary>
-        /// https://tools.ietf.org/html/rfc7517#section-4.2
-        /// </summary>
-        const string Signature = "sig";
-
         public KeyDetails[] Parse(string content)
         {
             var keyData = JsonConvert.DeserializeObject<IssuerKeys>(content);
 
             return keyData.Keys
-                .Where(IsRsaKeyForSigning)
+                .Where(IsRsaKey)
                 .Select(ConvertIssuerKeyToDetails)
                 .ToArray();
         }
 
-        bool IsRsaKeyForSigning(IssuerKey key)
+        bool IsRsaKey(IssuerKey key)
         {
-            return key.KeyType == RsaKeyType && key.PublicKeyUse == Signature;
+            return key.KeyType == RsaKeyType;
         }
 
         static KeyDetails ConvertIssuerKeyToDetails(IssuerKey key)

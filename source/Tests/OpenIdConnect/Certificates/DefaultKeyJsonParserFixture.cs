@@ -62,11 +62,9 @@ namespace Tests.OpenIdConnect.Certificates
         {
             var fixtureType = typeof(DefaultKeyJsonParserFixture);
             var resourceName = $"{fixtureType.FullName}.{testName}.jwks.json";
-            using (var s = fixtureType.Assembly.GetManifestResourceStream(resourceName))
-            using (var sr = new StreamReader(s))
-            {
-                return sr.ReadToEnd();
-            }
+            using var s = fixtureType.Assembly.GetManifestResourceStream(resourceName);
+            using var sr = new StreamReader(s);
+            return sr.ReadToEnd();
         }
     }
 }

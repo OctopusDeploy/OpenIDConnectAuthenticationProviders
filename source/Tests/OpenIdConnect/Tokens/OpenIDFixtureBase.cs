@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using JWT;
 using JWT.Serializers;
 using Microsoft.IdentityModel.Tokens;
@@ -28,9 +28,62 @@ namespace Tests.OpenIdConnect.Tokens
 
         protected const string DefaultRedirect = "/infrastructure/machines/machines-1";
 
-        protected OctoRequest CreateRequest(string token, string redirectAfterLoginTo = DefaultRedirect, bool usingSecureConnection = false)
+        class OctoRequest : IOctoRequest
         {
-            var request = new OctoRequest("https", true, DefaultIssuer, String.Empty, string.Empty, "http", Stream.Null, null, null, new Dictionary<string, IEnumerable<string>>(), null);
+            public OctoRequest(string scheme, bool isHttps, string host, string pathBase, string path, string protocol, IDictionary<string, IEnumerable<string>> headers, IDictionary<string, IEnumerable<string>> form, IDictionary<string, string> cookies, IPrincipal user)
+            {
+                Scheme = scheme;
+                IsHttps = isHttps;
+                Host = host;
+                PathBase = pathBase;
+                Path = path;
+                Protocol = protocol;
+                Headers = headers;
+                Form = form;
+                Cookies = cookies;
+                User = user;
+            }
+
+            public string Scheme { get; }
+            public bool IsHttps { get; }
+            public string Host { get; }
+            public string PathBase { get; }
+            public string Path { get; }
+            public string Protocol { get; }
+            public IDictionary<string, IEnumerable<string>> Headers { get; }
+            public IDictionary<string, IEnumerable<string>> Form { get; }
+            public IDictionary<string, string> Cookies { get; }
+            public IPrincipal User { get; }
+
+            public OctoResponse GetQueryValue<T>(IRequiredParameter<T> parameter, Func<T, OctoResponse> onSuccess)
+            {
+                throw new NotImplementedException();
+            }
+
+            public T GetQueryValue<T>(IOptionalParameter parameter, T defaultValue)
+            {
+                throw new NotImplementedException();
+            }
+
+            public OctoResponse GetPathParameterValue<T>(IRequiredParameter<T> parameter, Func<T, OctoResponse> onSuccess)
+            {
+                throw new NotImplementedException();
+            }
+
+            public T GetPathParameterValue<T>(IOptionalParameter parameter, T defaultValue)
+            {
+                throw new NotImplementedException();
+            }
+
+            public T GetBody<T>()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected IOctoRequest CreateRequest(string token, string redirectAfterLoginTo = DefaultRedirect, bool usingSecureConnection = false)
+        {
+            var request = new OctoRequest("https", true, DefaultIssuer, String.Empty, string.Empty, "http", null, new Dictionary<string, IEnumerable<string>>(), null, null);
             //request.Form["access_token"] = null;
             request.Form["id_token"] = new [] { token };
             var stateData = JsonConvert.SerializeObject(new LoginState {RedirectAfterLoginTo = redirectAfterLoginTo, UsingSecureConnection = usingSecureConnection});

@@ -59,7 +59,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => (string) pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => (string) pair.Value), out var stateString);
             var state = JsonConvert.DeserializeObject<LoginState>(stateString);
 
             // Assert
@@ -106,7 +106,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString);
             var state = JsonConvert.DeserializeObject<LoginState>(stateString);
 
             // Assert
@@ -150,7 +150,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .ReturnsForAnyArgs(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(staleKey));
 
             // Act
-            Assert.ThrowsAsync<SecurityTokenInvalidSignatureException>(() => target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString));
+            Assert.ThrowsAsync<SecurityTokenInvalidSignatureException>(() => target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString));
 
             // Expect Exception Thrown
 
@@ -179,7 +179,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            Assert.ThrowsAsync(expectedException, () => target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString));
+            Assert.ThrowsAsync(expectedException, () => target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString));
 
             // Expect Exception Thrown
 

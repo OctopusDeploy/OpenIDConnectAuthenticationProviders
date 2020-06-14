@@ -7,7 +7,7 @@ using Octopus.Server.Extensibility.Extensions.Infrastructure.Web.Api;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common
 {
-    public abstract class OpenIDConnectModule<TAuthenticationAction, TStore, TAuthenticatedAction, TAuthTokenHandler, TIdentityCreator> : RegisterEndpoint
+    public abstract class OpenIDConnectModule<TAuthenticationAction, TStore, TAuthenticatedAction, TAuthTokenHandler, TIdentityCreator> : RegistersEndpoints
         where TStore : IOpenIDConnectConfigurationStore
         where TAuthenticationAction : UserAuthenticationAction<TStore>
         where TAuthTokenHandler : IAuthTokenHandler

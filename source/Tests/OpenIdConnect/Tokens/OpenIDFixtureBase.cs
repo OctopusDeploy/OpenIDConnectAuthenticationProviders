@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using JWT;
 using JWT.Serializers;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +31,7 @@ namespace Tests.OpenIdConnect.Tokens
 
         class OctoRequest : IOctoRequest
         {
-            public OctoRequest(string scheme, bool isHttps, string host, string pathBase, string path, string protocol, IDictionary<string, IEnumerable<string>> headers, IDictionary<string, IEnumerable<string>> form, IDictionary<string, string> cookies, IPrincipal user)
+            public OctoRequest(string scheme, bool isHttps, string host, string pathBase, string path, string protocol, IDictionary<string, IEnumerable<string>> headers, IDictionary<string, string> form, IDictionary<string, string> cookies, IPrincipal user)
             {
                 Scheme = scheme;
                 IsHttps = isHttps;
@@ -51,31 +52,16 @@ namespace Tests.OpenIdConnect.Tokens
             public string Path { get; }
             public string Protocol { get; }
             public IDictionary<string, IEnumerable<string>> Headers { get; }
-            public IDictionary<string, IEnumerable<string>> Form { get; }
+            public IDictionary<string, string> Form { get; }
             public IDictionary<string, string> Cookies { get; }
             public IPrincipal User { get; }
 
-            public OctoResponse GetQueryValue<T>(IRequiredParameter<T> parameter, Func<T, OctoResponse> onSuccess)
+            public Task<IOctoResponseProvider> GetParameterValue<T>(IResponderParameter<T> parameter, Func<T, Task<IOctoResponseProvider>> onSuccess)
             {
                 throw new NotImplementedException();
             }
 
-            public T GetQueryValue<T>(IOptionalParameter parameter, T defaultValue)
-            {
-                throw new NotImplementedException();
-            }
-
-            public OctoResponse GetPathParameterValue<T>(IRequiredParameter<T> parameter, Func<T, OctoResponse> onSuccess)
-            {
-                throw new NotImplementedException();
-            }
-
-            public T GetPathParameterValue<T>(IOptionalParameter parameter, T defaultValue)
-            {
-                throw new NotImplementedException();
-            }
-
-            public T GetBody<T>()
+            public TResource GetBody<TResource>(RequestBodyRegistration<TResource> registration)
             {
                 throw new NotImplementedException();
             }
@@ -83,11 +69,11 @@ namespace Tests.OpenIdConnect.Tokens
 
         protected IOctoRequest CreateRequest(string token, string redirectAfterLoginTo = DefaultRedirect, bool usingSecureConnection = false)
         {
-            var request = new OctoRequest("https", true, DefaultIssuer, String.Empty, string.Empty, "http", null, new Dictionary<string, IEnumerable<string>>(), null, null);
+            var request = new OctoRequest("https", true, DefaultIssuer, String.Empty, string.Empty, "http", null, new Dictionary<string, string>(), null, null);
             //request.Form["access_token"] = null;
-            request.Form["id_token"] = new [] { token };
+            request.Form["id_token"] = token;
             var stateData = JsonConvert.SerializeObject(new LoginState {RedirectAfterLoginTo = redirectAfterLoginTo, UsingSecureConnection = usingSecureConnection});
-            request.Form["state"] = new [] { stateData };
+            request.Form["state"] = stateData;
             return request;
         }
 

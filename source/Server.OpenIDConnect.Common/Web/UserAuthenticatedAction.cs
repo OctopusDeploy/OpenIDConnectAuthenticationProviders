@@ -26,6 +26,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         where TAuthTokenHandler : IAuthTokenHandler
         where TIdentityCreator : IIdentityCreator
     {
+        static readonly BadRequestRegistration LoginFailed = new BadRequestRegistration("User login failed");
+        static readonly RedirectRegistration Redirect = new RedirectRegistration("Redirects back to the Octopus portal");
+        
         readonly ILog log;
         readonly TAuthTokenHandler authTokenHandler;
         readonly IPrincipalToUserResourceMapper principalToUserResourceMapper;
@@ -67,10 +70,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         protected abstract string ProviderName { get; }
 
-        public async Task<OctoResponse> ExecuteAsync(IOctoRequest request)
+        public async Task<IOctoResponseProvider> ExecuteAsync(IOctoRequest request)
         {
             // Step 1: Try and get all of the details from the request making sure there are no errors passed back from the external identity provider
-            var principalContainer = await authTokenHandler.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateStringFromRequest);
+            var principalContainer = await authTokenHandler.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateStringFromRequest);
             var principal = principalContainer.Principal;
             if (principal == null || !string.IsNullOrEmpty(principalContainer.Error))
             {
@@ -147,7 +150,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                         return BadRequest($"The Octopus User Account '{authenticationCandidate.Username}' is a Service Account, which are prevented from using Octopus interactively. Service Accounts are designed to authorize external systems to access the Octopus API using an API Key.");
                     }
 
-                    var octoResponse = new OctoRedirectResponse(stateFromRequest.RedirectAfterLoginTo)
+                    var octoResponse = Redirect.Response(stateFromRequest.RedirectAfterLoginTo)
                         .WithHeader("Expires", new string[] { DateTime.UtcNow.AddYears(1).ToString("R", DateTimeFormatInfo.InvariantInfo) })
                         .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusStateCookieName, Value = Guid.NewGuid().ToString(), HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue})
                         .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusNonceCookieName, Value = Guid.NewGuid().ToString(), HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue});
@@ -176,10 +179,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             }
         }
 
-        OctoResponse BadRequest(string message)
+        IOctoResponseProvider BadRequest(string message)
         {
             log.Error(message);
-            return new OctoBadRequestResponse(message);
+            return LoginFailed.Response(message);
         }
 
         UserCreateResult GetOrCreateUser(UserResource userResource, string[] groups, CancellationToken cancellationToken)

@@ -57,7 +57,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString);
 
             // Assert
             Assert.IsNotNull(result);
@@ -88,7 +88,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString);
 
             // Assert
             Assert.IsNotNull(result);
@@ -119,7 +119,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString);
 
             // Assert
             Assert.IsNotNull(result);
@@ -152,7 +152,7 @@ namespace Tests.OpenIdConnect.Tokens
                 .Returns(Task.FromResult<IDictionary<string, AsymmetricSecurityKey>>(key));
 
             // Act
-            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value?.FirstOrDefault()), out var stateString);
+            var result = await target.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => pair.Value), out var stateString);
 
             // Assert
             Assert.IsNotNull(result);

@@ -14,6 +14,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
     public abstract class UserAuthenticationAction<TStore> : IAsyncApiAction
         where TStore : IOpenIDConnectConfigurationStore
     {
+        static readonly BadRequestRegistration Disabled = new BadRequestRegistration("This authentication provider is disabled.");
+        static readonly BadRequestRegistration PotentialOpenDirect = new BadRequestRegistration("Request not allowed, due to potential Open Redirection attack");
+        static readonly BadRequestRegistration LoginFailed = new BadRequestRegistration("Login failed. Please see the Octopus Server logs for more details.");
+        static readonly OctopusJsonRegistration<LoginRedirectLinkResponseModel> Result = new OctopusJsonRegistration<LoginRedirectLinkResponseModel>();
+        
         readonly ILog log;
         readonly IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer;
         readonly IAuthorizationEndpointUrlBuilder urlBuilder;
@@ -38,12 +43,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             this.urlBuilder = urlBuilder;
         }
 
-        public async Task<OctoResponse> ExecuteAsync(IOctoRequest request)
+        public async Task<IOctoResponseProvider> ExecuteAsync(IOctoRequest request)
         {
             if (ConfigurationStore.GetIsEnabled() == false)
             {
                 log.Warn($"{ConfigurationStore.ConfigurationSettingsName} user authentication API was called while the provider was disabled.");
-                return new OctoBadRequestResponse("This authentication provider is disabled.");
+                return Disabled.Response();
             }
 
             var model = modelBinder.Bind<LoginRedirectLinkRequestModel>();
@@ -58,7 +63,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             if (!Requests.IsLocalUrl(state.RedirectAfterLoginTo, whitelist))
             {
                 log.WarnFormat("Prevented potential Open Redirection attack on an authentication request, to the non-local url {0}", state.RedirectAfterLoginTo);
-                return new OctoBadRequestResponse("Request not allowed, due to potential Open Redirection attack");
+                return PotentialOpenDirect.Response();
             }
 
             // Finally, provide the client with the information it requires to initiate the redirect to the external identity provider
@@ -74,19 +79,19 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, nonce, stateString);
 
                 // These cookies are used to validate the data returned from the external identity provider - this prevents tampering
-                return new OctoDataResponse(new LoginRedirectLinkResponseModel {ExternalAuthenticationUrl = url})
+                return Result.Response(new LoginRedirectLinkResponseModel {ExternalAuthenticationUrl = url})
                     .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusStateCookieName, Value = State.Protect(stateString), HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)})
                     .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusNonceCookieName, Value = Nonce.Protect(nonce), HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)});
             }
             catch (ArgumentException ex)
             {
                 log.Error(ex);
-                return new OctoBadRequestResponse(ex.Message);
+                return LoginFailed.Response(ex.Message);
             }
             catch (Exception ex)
             {
                 log.Error(ex);
-                return new OctoBadRequestResponse("Login failed. Please see the Octopus Server logs for more details.");
+                return LoginFailed.Response();
             }
         }
     }

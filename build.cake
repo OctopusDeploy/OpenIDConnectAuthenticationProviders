@@ -23,7 +23,7 @@ var artifactsDir = "./artifacts";
 var assetDir = "./BuildAssets";
 var solutionToBuild = "./source/OpenIDConnectAuthenticationProvider.sln";
 
-var bin = "/bin/Release/netstandard2.0/";
+var bin = "/bin/Release/netstandard2.1/";
 
 var gitVersionInfo = GitVersion(new GitVersionSettings {
     OutputType = GitVersionOutput.Json

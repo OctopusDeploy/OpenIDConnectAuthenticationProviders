@@ -61,6 +61,11 @@ namespace Tests.OpenIdConnect.Tokens
                 throw new NotImplementedException();
             }
 
+            public RequestExecutorBuilder<TParameterType> WithParameter<TParameterType>(IResponderParameter<TParameterType> parameter)
+            {
+                throw new NotImplementedException();
+            }
+
             public TResource GetBody<TResource>(RequestBodyRegistration<TResource> registration)
             {
                 throw new NotImplementedException();

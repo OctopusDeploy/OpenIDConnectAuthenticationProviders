@@ -15,12 +15,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         {
         }
 
-        public string GetIssuer()
+        public string? GetIssuer()
         {
             return GetProperty(doc => doc.Issuer);
         }
 
-        public void SetIssuer(string issuer)
+        public void SetIssuer(string? issuer)
         {
             Guid issuerAsGuid;
             if (Guid.TryParse(issuer, out issuerAsGuid))
@@ -30,32 +30,32 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
             SetProperty(doc => doc.Issuer = issuer);
         }
 
-        public string GetClientId()
+        public string? GetClientId()
         {
             return GetProperty(doc => doc.ClientId);
         }
 
-        public void SetClientId(string clientId)
+        public void SetClientId(string? clientId)
         {
             SetProperty(doc => doc.ClientId = clientId);
         }
 
-        public string GetScope()
+        public string? GetScope()
         {
             return GetProperty(doc => doc.Scope);
         }
 
-        public void SetScope(string scope)
+        public void SetScope(string? scope)
         {
             SetProperty(doc => doc.Scope = scope);
         }
 
-        public string GetNameClaimType()
+        public string? GetNameClaimType()
         {
             return GetProperty(doc => doc.NameClaimType);
         }
 
-        public void SetNameClaimType(string nameClaimType)
+        public void SetNameClaimType(string? nameClaimType)
         {
             SetProperty(doc => doc.NameClaimType = nameClaimType);
         }

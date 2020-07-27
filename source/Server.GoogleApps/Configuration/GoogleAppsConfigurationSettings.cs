@@ -20,7 +20,7 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Configuration
                 yield return configurationValue;
             }
 
-            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.HostedDomain", ConfigurationDocumentStore.GetHostedDomain(), ConfigurationDocumentStore.GetIsEnabled(), "Hosted Domain");
+            yield return new ConfigurationValue<string?>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.HostedDomain", ConfigurationDocumentStore.GetHostedDomain(), ConfigurationDocumentStore.GetIsEnabled(), "Hosted Domain");
         }
     }
 }

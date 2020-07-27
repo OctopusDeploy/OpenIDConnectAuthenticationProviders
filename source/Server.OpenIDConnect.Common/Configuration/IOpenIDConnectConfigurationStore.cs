@@ -12,17 +12,17 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
     {
         string ConfigurationSettingsName { get; }
 
-        string GetIssuer();
-        void SetIssuer(string issuer);
+        string? GetIssuer();
+        void SetIssuer(string? issuer);
 
-        string GetClientId();
-        void SetClientId(string clientId);
+        string? GetClientId();
+        void SetClientId(string? clientId);
 
-        string GetScope();
-        void SetScope(string scope);
+        string? GetScope();
+        void SetScope(string? scope);
 
-        string GetNameClaimType();
-        void SetNameClaimType(string nameClaimType);
+        string? GetNameClaimType();
+        void SetNameClaimType(string? nameClaimType);
 
         string RedirectUri { get; }
 

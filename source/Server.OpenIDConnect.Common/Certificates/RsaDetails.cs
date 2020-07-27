@@ -2,7 +2,7 @@
 {
     public class RsaDetails : KeyDetails
     {
-        public string Modulus { get; set; }
-        public string Exponent { get; set; }
+        public string Modulus { get; set; } = string.Empty;
+        public string Exponent { get; set; } = string.Empty;
     }
 }

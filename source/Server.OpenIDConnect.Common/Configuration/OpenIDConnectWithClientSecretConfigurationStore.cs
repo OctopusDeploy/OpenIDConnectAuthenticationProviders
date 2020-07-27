@@ -10,12 +10,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         {
         }
 
-        public SensitiveString GetClientSecret()
+        public SensitiveString? GetClientSecret()
         {
             return GetProperty(doc => doc.ClientSecret);
         }
 
-        public void SetClientSecret(SensitiveString clientSecret)
+        public void SetClientSecret(SensitiveString? clientSecret)
         {
             SetProperty(doc => doc.ClientSecret = clientSecret);
         }

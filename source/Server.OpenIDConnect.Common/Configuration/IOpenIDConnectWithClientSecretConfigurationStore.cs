@@ -9,7 +9,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
 
     public interface IOpenIDConnectWithClientSecretConfigurationStore : IOpenIDConnectConfigurationStore
     {
-        SensitiveString GetClientSecret();
-        void SetClientSecret(SensitiveString clientSecret);
+        SensitiveString? GetClientSecret();
+        void SetClientSecret(SensitiveString? clientSecret);
     }
 }

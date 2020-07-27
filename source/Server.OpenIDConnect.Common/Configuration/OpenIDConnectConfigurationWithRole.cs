@@ -10,6 +10,6 @@
         {
         }
 
-        public string RoleClaimType { get; set; }
+        public string? RoleClaimType { get; set; }
     }
 }

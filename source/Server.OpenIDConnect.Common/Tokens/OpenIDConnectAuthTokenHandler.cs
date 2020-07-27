@@ -20,24 +20,24 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
         {
         }
 
-        public Task<ClaimsPrincipleContainer> GetPrincipalAsync(IDictionary<string, string> requestForm, out string stateString)
+        public Task<ClaimsPrincipleContainer> GetPrincipalAsync(IDictionary<string, string?> requestForm, out string? stateString)
         {
             stateString = null;
             
             if (requestForm.ContainsKey("error"))
             {
-                var errorDescription = requestForm["error_description"];
+                var errorDescription = requestForm["error_description"] ?? string.Empty;
                 Log.Error($"Failed to authenticate user: {errorDescription}");
                 return Task.FromResult(new ClaimsPrincipleContainer(errorDescription));
             }
 
-            string accessToken = null;
+            string? accessToken = null;
             if (requestForm.ContainsKey("access_token"))
             {
                 accessToken = requestForm["access_token"];
             }
             
-            string idToken = null;
+            string? idToken = null;
             if (requestForm.ContainsKey("id_token"))
             {
                 idToken = requestForm["id_token"];

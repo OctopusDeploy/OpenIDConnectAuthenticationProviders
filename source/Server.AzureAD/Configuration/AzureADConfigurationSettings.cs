@@ -20,7 +20,7 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
             {
                 yield return configurationValue;
             }
-            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != AzureADConfiguration.DefaultRoleClaimType, "Role Claim Type");
+            yield return new ConfigurationValue<string?>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != AzureADConfiguration.DefaultRoleClaimType, "Role Claim Type");
         }
 
     }

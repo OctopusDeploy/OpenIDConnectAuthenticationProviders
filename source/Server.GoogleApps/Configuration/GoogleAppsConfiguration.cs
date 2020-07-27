@@ -9,6 +9,6 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Configuration
             Issuer = "https://accounts.google.com";
         }
 
-        public string HostedDomain { get; set; }
+        public string? HostedDomain { get; set; }
     }
 }

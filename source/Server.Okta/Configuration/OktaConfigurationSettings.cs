@@ -19,8 +19,8 @@ namespace Octopus.Server.Extensibility.Authentication.Okta.Configuration
             {
                 yield return configurationValue;
             }
-            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != OktaConfiguration.DefaultRoleClaimType, "Role Claim Type");
-            yield return new ConfigurationValue<string>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.UsernameClaimType", ConfigurationDocumentStore.GetUsernameClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetUsernameClaimType() != OktaConfiguration.DefaultUsernameClaimType, "Username Claim Type");
+            yield return new ConfigurationValue<string?>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.RoleClaimType", ConfigurationDocumentStore.GetRoleClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetRoleClaimType() != OktaConfiguration.DefaultRoleClaimType, "Role Claim Type");
+            yield return new ConfigurationValue<string?>($"Octopus.{ConfigurationDocumentStore.ConfigurationSettingsName}.UsernameClaimType", ConfigurationDocumentStore.GetUsernameClaimType(), ConfigurationDocumentStore.GetIsEnabled() && ConfigurationDocumentStore.GetUsernameClaimType() != OktaConfiguration.DefaultUsernameClaimType, "Username Claim Type");
         }
     }
 }

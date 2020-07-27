@@ -2,6 +2,6 @@
 {
     public class CertificateDetails : KeyDetails
     {
-        public string Certificate { get; set; }
+        public string Certificate { get; set; } = string.Empty;
     }
 }

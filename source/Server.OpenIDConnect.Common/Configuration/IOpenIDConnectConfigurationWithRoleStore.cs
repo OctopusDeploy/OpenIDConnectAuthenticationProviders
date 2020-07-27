@@ -10,7 +10,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
 
     public interface IOpenIDConnectConfigurationWithRoleStore : IOpenIDConnectConfigurationStore
     {
-        string GetRoleClaimType();
-        void SetRoleClaimType(string roleClaimType);
+        string? GetRoleClaimType();
+        void SetRoleClaimType(string? roleClaimType);
     }
 }

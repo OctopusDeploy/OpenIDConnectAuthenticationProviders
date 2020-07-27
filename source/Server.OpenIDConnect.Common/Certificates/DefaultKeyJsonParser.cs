@@ -50,28 +50,28 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
 
         public class IssuerKeys
         {
-            public List<IssuerKey> Keys { get; set; }
+            public List<IssuerKey> Keys { get; set; } = new List<IssuerKey>();
         }
 
         public class IssuerKey
         {
             [JsonProperty("kty")]
-            public string KeyType { get; set; }
+            public string KeyType { get; set; } = string.Empty;
 
             [JsonProperty("use")]
-            public string PublicKeyUse { get; set; }
+            public string PublicKeyUse { get; set; } = string.Empty;
 
             [JsonProperty("kid")]
-            public string KeyId { get; set; }
+            public string KeyId { get; set; } = string.Empty;
 
             [JsonProperty("e")]
-            public string Exponent { get; set; }
+            public string? Exponent { get; set; }
 
             [JsonProperty("n")]
-            public string Modulus { get; set; }
+            public string? Modulus { get; set; }
 
             [JsonProperty("x5c")]
-            public string[] x509Chain { get; set; }
+            public string[]? x509Chain { get; set; }
         }
     }
 }

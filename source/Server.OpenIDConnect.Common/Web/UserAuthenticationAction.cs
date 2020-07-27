@@ -69,7 +69,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             // Finally, provide the client with the information it requires to initiate the redirect to the external identity provider
             try
             {
-                var issuer = ConfigurationStore.GetIssuer();
+                var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
                 var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
                 // Use a non-deterministic nonce to prevent replay attacks
@@ -80,8 +80,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
                 // These cookies are used to validate the data returned from the external identity provider - this prevents tampering
                 return Result.Response(new LoginRedirectLinkResponseModel {ExternalAuthenticationUrl = url})
-                    .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusStateCookieName, Value = State.Protect(stateString), HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)})
-                    .WithCookie(new OctoCookie {Name = UserAuthConstants.OctopusNonceCookieName, Value = Nonce.Protect(nonce), HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)});
+                    .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, State.Protect(stateString)) { HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20) })
+                    .WithCookie(new OctoCookie(UserAuthConstants.OctopusNonceCookieName, Nonce.Protect(nonce)) { HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20) });
             }
             catch (ArgumentException ex)
             {

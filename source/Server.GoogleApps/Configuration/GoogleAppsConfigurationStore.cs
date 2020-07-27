@@ -15,12 +15,12 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Configuration
         {
         }
 
-        public string GetHostedDomain()
+        public string? GetHostedDomain()
         {
             return GetProperty(doc => doc.HostedDomain);
         }
 
-        public void SetHostedDomain(string hostedDomain)
+        public void SetHostedDomain(string? hostedDomain)
         {
             SetProperty(doc => doc.HostedDomain = hostedDomain);
         }

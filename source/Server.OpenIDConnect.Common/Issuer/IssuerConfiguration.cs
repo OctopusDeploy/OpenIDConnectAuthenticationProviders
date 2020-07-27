@@ -4,12 +4,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
 {
     public class IssuerConfiguration
     {
-        public string Issuer  { get; set; }
+        public string Issuer  { get; set; } = string.Empty;
 
         [JsonProperty("jwks_uri")]
-        public string JwksUri { get; set; }
+        public string JwksUri { get; set; } = string.Empty;
         
         [JsonProperty("authorization_endpoint")]
-        public string AuthorizationEndpoint { get; set; }
+        public string AuthorizationEndpoint { get; set; } = string.Empty;
     }
 }

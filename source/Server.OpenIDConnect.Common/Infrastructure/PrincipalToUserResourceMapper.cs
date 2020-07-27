@@ -25,17 +25,17 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
             return userResource;
         }
 
-        protected virtual string GetExternalId(ClaimsPrincipal principal)
+        protected virtual string? GetExternalId(ClaimsPrincipal principal)
         {
             return GetClaimValue(principal, ClaimTypes.NameIdentifier);
         }
 
-        protected virtual string GetUsername(ClaimsPrincipal principal)
+        protected virtual string? GetUsername(ClaimsPrincipal principal)
         {
             return GetClaimValue(principal, ClaimTypes.Email) ?? GetClaimValue(principal, ClaimTypes.NameIdentifier);
         }
 
-        protected virtual string GetEmailAddress(ClaimsPrincipal principal)
+        protected virtual string? GetEmailAddress(ClaimsPrincipal principal)
         {
             return GetClaimValue(principal, ClaimTypes.Email);
         }
@@ -45,7 +45,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
             return principal.Identity.Name;
         }
 
-        protected string GetClaimValue(ClaimsPrincipal principal, string type)
+        protected string? GetClaimValue(ClaimsPrincipal principal, string type)
         {
             // NOTE: The System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler maps OIDC claims from short to long names.
             // See System.IdentityModel.Tokens.Jwt.ClaimTypeMapping for more details.

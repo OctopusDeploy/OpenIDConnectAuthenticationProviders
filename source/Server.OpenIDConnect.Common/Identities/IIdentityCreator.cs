@@ -4,6 +4,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Ident
 {
     public interface IIdentityCreator
     {
-        Identity Create(string email, string displayName, string externalId);
+        Identity Create(string? email, string? displayName, string? externalId);
     }
 }

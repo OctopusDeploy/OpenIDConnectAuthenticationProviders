@@ -19,7 +19,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
         protected virtual string ResponseType => OpenIDConnectConfiguration.DefaultResponseType;
         protected virtual string ResponseMode => OpenIDConnectConfiguration.DefaultResponseMode;
 
-        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string nonce, string state = null)
+        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string nonce, string? state = null)
         {
             if (issuerConfiguration == null)
                 throw new ArgumentException("issuerConfiguration is required", nameof(issuerConfiguration));

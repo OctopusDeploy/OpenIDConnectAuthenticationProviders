@@ -2,6 +2,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
 {
     public interface IOpenIDConnectConfigurationWithRole : IOpenIDConnectConfiguration
     {
-        string RoleClaimType { get; set; }       
+        string? RoleClaimType { get; set; }       
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Tokens
 {
@@ -7,6 +8,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
         public ClaimsPrincipleContainer(string error)
         {
             this.Error = error;
+            ExternalGroupIds = Array.Empty<string>();
         }
         public ClaimsPrincipleContainer(ClaimsPrincipal principal, string[] externalGroupIds)
         {
@@ -14,12 +16,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             ExternalGroupIds = externalGroupIds;
         }
 
-        public string Error { get; private set; }
-        public ClaimsPrincipal Principal { get; private set; }
+        public string? Error { get; }
+        public ClaimsPrincipal? Principal { get; }
 
         /// <summary>
         /// Gets or sets the external Role/Group Ids
         /// </summary>
-        public string[] ExternalGroupIds { get; private set; }
+        public string[] ExternalGroupIds { get; }
     }
 }

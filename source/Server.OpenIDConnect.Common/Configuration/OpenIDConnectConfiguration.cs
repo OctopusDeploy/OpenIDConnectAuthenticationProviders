@@ -23,13 +23,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
             AllowAutoUserCreation = true;
         }
 
-        public string Issuer { get; set; }
+        public string? Issuer { get; set; }
 
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
-        public string Scope { get; set; }
+        public string? Scope { get; set; }
 
-        public string NameClaimType { get; set; }
+        public string? NameClaimType { get; set; }
 
         public bool AllowAutoUserCreation { get; set; }
     }

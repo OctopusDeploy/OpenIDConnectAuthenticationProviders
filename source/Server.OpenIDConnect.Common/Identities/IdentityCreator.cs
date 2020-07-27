@@ -9,12 +9,17 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Ident
 
         protected abstract string ProviderName { get; }
 
-        public Identity Create(string email, string displayName, string externalId)
+        public Identity Create(string? email, string? displayName, string? externalId)
         {
-            return new Identity(ProviderName)
-                .WithClaim(ClaimDescriptor.EmailClaimType, email, true)
-                .WithClaim(ClaimDescriptor.DisplayNameClaimType, displayName, false)
-                .WithClaim(ExternalIdClaimType, externalId, true, true);
+            var identity = new Identity(ProviderName);
+            if (email != null)
+                identity = identity.WithClaim(ClaimDescriptor.EmailClaimType, email, true);
+            if (displayName != null)
+                identity = identity.WithClaim(ClaimDescriptor.DisplayNameClaimType, displayName, false);
+            if (externalId != null)
+                identity = identity.WithClaim(ExternalIdClaimType, externalId, true, true);
+
+            return identity;
         }
     }
 }

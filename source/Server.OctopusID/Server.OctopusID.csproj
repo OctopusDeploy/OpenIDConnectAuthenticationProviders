@@ -8,12 +8,14 @@
     <Description>Octopus Deploy: Extensibility.Authentication.OctopusID</Description>
     <Authors>Octopus Deploy</Authors>
     <PackageIconUrl>http://i.octopusdeploy.com/resources/Avatar3_360.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/OctopusDeploy/OpenIDConnectAuthenticationProviders</PackageProjectUrl>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>true</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Octopus.Diagnostics" Version="1.3.0" />
+    <PackageReference Include="Octopus.Diagnostics" Version="1.3.5" />
   </ItemGroup>
 
   <ItemGroup>

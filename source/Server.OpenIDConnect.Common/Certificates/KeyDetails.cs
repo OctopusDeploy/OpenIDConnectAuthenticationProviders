@@ -2,6 +2,6 @@
 {
     public class KeyDetails
     {
-        public string Kid { get; set; }
+        public string Kid { get; set; } = string.Empty;
     }
 }

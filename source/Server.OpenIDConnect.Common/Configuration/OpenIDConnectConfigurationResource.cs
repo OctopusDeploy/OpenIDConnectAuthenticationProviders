@@ -8,12 +8,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
     {
         [Description("Follow our documentation to find the Issuer for your identity provider")]
         [Writeable]
-        public virtual string Issuer { get; set; }
+        public virtual string? Issuer { get; set; }
 
         [DisplayName("Client ID")]
         [Description("Octopus instances unique authentication id, as provided by your Octopus account")]
         [Writeable]
-        public virtual string ClientId { get; set; }
+        public virtual string? ClientId { get; set; }
 
         [DisplayName("Allow Auto User Creation")]
         [Description("Tell Octopus to automatically create a user account when a person signs in for the first time with this identity provider")]

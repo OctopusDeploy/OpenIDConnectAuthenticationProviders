@@ -12,6 +12,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         {
         }
 
-        public SensitiveString ClientSecret { get; set; }
+        public SensitiveString? ClientSecret { get; set; }
     }
 }

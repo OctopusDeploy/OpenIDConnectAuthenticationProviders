@@ -36,11 +36,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             Log = log;
         }
 
-        protected async Task<ClaimsPrincipleContainer> GetPrincipalFromToken(string accessToken, string idToken)
+        protected async Task<ClaimsPrincipleContainer> GetPrincipalFromToken(string? accessToken, string? idToken)
         {
-            ClaimsPrincipal principal = null;
+            ClaimsPrincipal? principal = null;
 
-            var issuer = ConfigurationStore.GetIssuer();
+            var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
             var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
             var validationParameters = new TokenValidationParameters
@@ -74,7 +74,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             }
             else
             {
-                principal = await ValidateUsingIssuerCerficate(validationParameters, tokenToValidate, issuerConfig);
+                principal = await ValidateUsingIssuerCertificate(validationParameters, tokenToValidate, issuerConfig);
             }
 
             var error = string.Empty;
@@ -86,11 +86,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             return new ClaimsPrincipleContainer(error);
         }
 
-        ClaimsPrincipal ValidateUsingSharedSecret(TokenValidationParameters validationParameters, string tokenToValidate)
+        ClaimsPrincipal ValidateUsingSharedSecret(TokenValidationParameters validationParameters, string? tokenToValidate)
         {
             if (ConfigurationStore is IOpenIDConnectWithClientSecretConfigurationStore clientSecretStore)
             {
                 var clientSecret = clientSecretStore.GetClientSecret();
+                if (clientSecret == null)
+                    throw new ArgumentException("Client secret is not configured.");
                 validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(clientSecret.Value));
             }
             else
@@ -111,7 +113,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             }
         }
 
-        async Task<ClaimsPrincipal> ValidateUsingIssuerCerficate(TokenValidationParameters validationParameters, string tokenToValidate, IssuerConfiguration issuerConfig)
+        async Task<ClaimsPrincipal> ValidateUsingIssuerCertificate(TokenValidationParameters validationParameters, string? tokenToValidate, IssuerConfiguration issuerConfig)
         {
             var keys = !string.IsNullOrWhiteSpace(issuerConfig.JwksUri) ? await keyRetriever.GetKeysAsync(issuerConfig) : new Dictionary<string, AsymmetricSecurityKey>();
             validationParameters.IssuerSigningKeyResolver = (s, securityToken, identifier, parameters) =>
@@ -126,7 +128,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             };
             
             SecurityToken unused;
-            ClaimsPrincipal principal = null;
+            ClaimsPrincipal? principal = null;
 
             var signatureError = false;
             var handler = new JwtSecurityTokenHandler();
@@ -134,6 +136,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             try
             {
                 principal = handler.ValidateToken(tokenToValidate, validationParameters, out unused);
+                return principal;
             }
             catch (SecurityTokenInvalidSignatureException)
             {
@@ -149,6 +152,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
                     Log.InfoFormat("Unable to locate signature key, attempting reload. Currently cached kids are {0}", string.Join(", ", keys.Keys));
                     keys = await keyRetriever.GetKeysAsync(issuerConfig, true);
                     principal = handler.ValidateToken(tokenToValidate, validationParameters, out unused);
+                    return principal;
                 }
                 catch (SecurityTokenInvalidSignatureException)
                 {
@@ -157,8 +161,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
                     throw;
                 }
             }
-
-            return principal;
+            throw new InvalidOperationException("Unable to retrieve issuer certificate");
         }
         
         protected virtual void SetIssuerSpecificTokenValidationParameters(TokenValidationParameters validationParameters)

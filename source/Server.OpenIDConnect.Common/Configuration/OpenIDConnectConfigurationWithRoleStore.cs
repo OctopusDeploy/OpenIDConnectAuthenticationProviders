@@ -10,12 +10,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         {
         }
 
-        public string GetRoleClaimType()
+        public string? GetRoleClaimType()
         {
             return GetProperty(doc => doc.RoleClaimType);
         }
 
-        public void SetRoleClaimType(string roleClaimType)
+        public void SetRoleClaimType(string? roleClaimType)
         {
             SetProperty(doc => doc.RoleClaimType = roleClaimType);
         }

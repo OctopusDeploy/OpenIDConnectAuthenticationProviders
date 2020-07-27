@@ -20,7 +20,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
         readonly TKeyParser keyParser;
         readonly ILog log;
         readonly object funcLock = new object();
-        Task<IDictionary<string, AsymmetricSecurityKey>> certRetrieveTask;
+        Task<IDictionary<string, AsymmetricSecurityKey>>? certRetrieveTask;
 
         protected readonly TStore ConfigurationStore;
 

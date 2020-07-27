@@ -22,11 +22,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
             var isEnabled = ConfigurationDocumentStore.GetIsEnabled();
 
             yield return new ConfigurationValue<bool>($"Octopus.{configurationSettingsName}.IsEnabled", isEnabled, isEnabled, "Is Enabled");
-            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.Issuer", ConfigurationDocumentStore.GetIssuer(), isEnabled, "Issuer");
-            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.ClientId", ConfigurationDocumentStore.GetClientId(), isEnabled, "ClientId");
-            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.Scope", ConfigurationDocumentStore.GetScope(), isEnabled && ConfigurationDocumentStore.GetScope() != OpenIDConnectConfiguration.DefaultScope, "Scope");
-            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.RedirectUri", ConfigurationDocumentStore.RedirectUri, isEnabled, "RedirectUri");
-            yield return new ConfigurationValue<string>($"Octopus.{configurationSettingsName}.NameClaimType", ConfigurationDocumentStore.GetNameClaimType(), isEnabled && ConfigurationDocumentStore.GetNameClaimType() != OpenIDConnectConfiguration.DefaultNameClaimType, "Name Claim Type");
+            yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.Issuer", ConfigurationDocumentStore.GetIssuer(), isEnabled, "Issuer");
+            yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.ClientId", ConfigurationDocumentStore.GetClientId(), isEnabled, "ClientId");
+            yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.Scope", ConfigurationDocumentStore.GetScope(), isEnabled && ConfigurationDocumentStore.GetScope() != OpenIDConnectConfiguration.DefaultScope, "Scope");
+            yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.RedirectUri", ConfigurationDocumentStore.RedirectUri, isEnabled, "RedirectUri");
+            yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.NameClaimType", ConfigurationDocumentStore.GetNameClaimType(), isEnabled && ConfigurationDocumentStore.GetNameClaimType() != OpenIDConnectConfiguration.DefaultNameClaimType, "Name Claim Type");
             yield return new ConfigurationValue<bool>($"Octopus.{configurationSettingsName}.AllowAutoUserCreation", ConfigurationDocumentStore.GetAllowAutoUserCreation(), isEnabled, "Allow auto user creation");
         }
 

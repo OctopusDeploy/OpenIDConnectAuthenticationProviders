@@ -13,6 +13,6 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Configuration
             RoleClaimType = DefaultRoleClaimType;
         }
         
-        public string RoleClaimType { get; set; }
+        public string? RoleClaimType { get; set; }
     }
 }

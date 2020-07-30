@@ -11,13 +11,11 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID
     class OctopusIDApi : OpenIDConnectModule<OctopusIDUserAuthenticationAction, IOctopusIDConfigurationStore, OctopusIDUserAuthenticatedAction, IOctopusIDAuthTokenHandler, IOctopusIDIdentityCreator>
     {
         public OctopusIDApi(
-            IOctopusIDConfigurationStore configurationStore, 
-            OctopusIDAuthenticationProvider authenticationProvider,
-            Func<WhenEnabledAsyncActionInvoker<OctopusIDUserAuthenticationAction, IOctopusIDConfigurationStore>> authenticateUserActionFactory,
-            Func<WhenEnabledAsyncActionInvoker<OctopusIDUserAuthenticatedAction, IOctopusIDConfigurationStore>> userAuthenticatedActionFactory) : base(configurationStore, authenticationProvider)
+            IOctopusIDConfigurationStore configurationStore, OctopusIDAuthenticationProvider authenticationProvider)
+            : base(configurationStore, authenticationProvider)
         {
-            Add("POST", authenticationProvider.AuthenticateUri, authenticateUserActionFactory().ExecuteAsync);
-            Add("POST", configurationStore.RedirectUri, userAuthenticatedActionFactory().ExecuteAsync);
+            Add<OctopusIDUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
+            Add<OctopusIDUserAuthenticatedAction>("POST", configurationStore.RedirectUri, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
         }
     }
 }

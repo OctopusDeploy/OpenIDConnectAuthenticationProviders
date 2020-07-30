@@ -11,14 +11,11 @@ namespace Octopus.Server.Extensibility.Authentication.Okta
 {
     class OktaApi : OpenIDConnectModule<OktaUserAuthenticationAction, IOktaConfigurationStore, OktaUserAuthenticatedAction, IOktaAuthTokenHandler, IOktaIdentityCreator>
     {
-        public OktaApi(
-            IOktaConfigurationStore configurationStore, 
-            OktaAuthenticationProvider authenticationProvider,
-            Func<WhenEnabledAsyncActionInvoker<OktaUserAuthenticationAction, IOktaConfigurationStore>> authenticateUserActionFactory,
-            Func<WhenEnabledAsyncActionInvoker<OktaUserAuthenticatedAction, IOktaConfigurationStore>> userAuthenticatedActionFactory) : base(configurationStore, authenticationProvider)
+        public OktaApi(IOktaConfigurationStore configurationStore, OktaAuthenticationProvider authenticationProvider)
+            : base(configurationStore, authenticationProvider)
         {
-            Add("POST", authenticationProvider.AuthenticateUri, authenticateUserActionFactory().ExecuteAsync);
-            Add("POST", configurationStore.RedirectUri, userAuthenticatedActionFactory().ExecuteAsync);
+            Add<OktaUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
+            Add<OktaUserAuthenticatedAction>("POST", configurationStore.RedirectUri, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
         }
     }
 }

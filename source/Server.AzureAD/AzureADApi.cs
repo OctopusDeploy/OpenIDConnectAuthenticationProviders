@@ -11,13 +11,11 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD
     class AzureADApi : OpenIDConnectModule<AzureADUserAuthenticationAction, IAzureADConfigurationStore, AzureADUserAuthenticatedAction, IAzureADAuthTokenHandler, IAzureADIdentityCreator>
     {
         public AzureADApi(
-            IAzureADConfigurationStore configurationStore, 
-            AzureADAuthenticationProvider authenticationProvider,
-            Func<WhenEnabledAsyncActionInvoker<AzureADUserAuthenticationAction, IAzureADConfigurationStore>> authenticateUserActionFactory,
-            Func<WhenEnabledAsyncActionInvoker<AzureADUserAuthenticatedAction, IAzureADConfigurationStore>> userAuthenticatedActionFactory) : base(configurationStore, authenticationProvider)
+            IAzureADConfigurationStore configurationStore, AzureADAuthenticationProvider authenticationProvider)
+            : base(configurationStore, authenticationProvider)
         {
-            Add("POST", authenticationProvider.AuthenticateUri, authenticateUserActionFactory().ExecuteAsync);
-            Add("POST", configurationStore.RedirectUri, userAuthenticatedActionFactory().ExecuteAsync);
+            Add<AzureADUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
+            Add<AzureADUserAuthenticatedAction>("POST", configurationStore.RedirectUri, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
         }
     }
 }

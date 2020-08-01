@@ -14,8 +14,8 @@ namespace Octopus.Server.Extensibility.Authentication.Okta
         public OktaApi(IOktaConfigurationStore configurationStore, OktaAuthenticationProvider authenticationProvider)
             : base(configurationStore, authenticationProvider)
         {
-            Add<OktaUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
-            Add<OktaUserAuthenticatedAction>("POST", configurationStore.RedirectUri, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
+            Add<OktaUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
+            Add<OktaUserAuthenticatedAction>("POST", configurationStore.RedirectUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IOktaConfigurationStore>());
         }
     }
 }

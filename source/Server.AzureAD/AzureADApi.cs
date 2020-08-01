@@ -14,8 +14,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD
             IAzureADConfigurationStore configurationStore, AzureADAuthenticationProvider authenticationProvider)
             : base(configurationStore, authenticationProvider)
         {
-            Add<AzureADUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
-            Add<AzureADUserAuthenticatedAction>("POST", configurationStore.RedirectUri, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
+            Add<AzureADUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
+            Add<AzureADUserAuthenticatedAction>("POST", configurationStore.RedirectUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IAzureADConfigurationStore>());
         }
     }
 }

@@ -14,8 +14,8 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID
             IOctopusIDConfigurationStore configurationStore, OctopusIDAuthenticationProvider authenticationProvider)
             : base(configurationStore, authenticationProvider)
         {
-            Add<OctopusIDUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
-            Add<OctopusIDUserAuthenticatedAction>("POST", configurationStore.RedirectUri, RouteCategory.Navigable, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
+            Add<OctopusIDUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
+            Add<OctopusIDUserAuthenticatedAction>("POST", configurationStore.RedirectUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IOctopusIDConfigurationStore>());
         }
     }
 }

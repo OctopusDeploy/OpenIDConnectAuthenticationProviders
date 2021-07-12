@@ -47,7 +47,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             {
                 ValidateActor = true,
                 ValidateAudience = true,
-                ValidAudience = issuer + "/resources",
+                ValidAudience = ConfigurationStore.GetClientId(),
                 ValidateIssuer = true,
                 ValidIssuer = issuerConfig.Issuer,
                 ValidateIssuerSigningKey = true
@@ -56,7 +56,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             if (!string.IsNullOrWhiteSpace(ConfigurationStore.GetNameClaimType()))
                 validationParameters.NameClaimType = ConfigurationStore.GetNameClaimType();
 
-            var tokenToValidate = accessToken;
+            var tokenToValidate = idToken;
             if (string.IsNullOrWhiteSpace(tokenToValidate))
             {
                 // if we're validating the id_token then the audience is based on the client_id, not the issuer/resource like access_token
@@ -88,9 +88,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
 
         ClaimsPrincipal ValidateUsingSharedSecret(TokenValidationParameters validationParameters, string? tokenToValidate)
         {
-            if (ConfigurationStore is IOpenIDConnectWithClientSecretConfigurationStore clientSecretStore)
+            if (ConfigurationStore.HasClientSecret)
             {
-                var clientSecret = clientSecretStore.GetClientSecret();
+                var clientSecret = ConfigurationStore.GetClientSecret();
                 if (clientSecret == null)
                     throw new ArgumentException("Client secret is not configured.");
                 validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(clientSecret.Value));

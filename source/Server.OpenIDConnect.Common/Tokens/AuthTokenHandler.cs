@@ -81,7 +81,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             DoIssuerSpecificClaimsValidation(principal, out error);
 
             if (string.IsNullOrWhiteSpace(error))
-                return new ClaimsPrincipleContainer(principal, GetProviderGroupIds(principal));
+                return new ClaimsPrincipleContainer(principal, GetProviderGroupIds(principal, tokenToValidate));
 
             return new ClaimsPrincipleContainer(error);
         }
@@ -172,7 +172,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             error = string.Empty;
         }
 
-        protected virtual string[] GetProviderGroupIds(ClaimsPrincipal principal)
+        protected virtual string[] GetProviderGroupIds(ClaimsPrincipal principal, string? idToken = null)
         {
             return new string[0];
         }

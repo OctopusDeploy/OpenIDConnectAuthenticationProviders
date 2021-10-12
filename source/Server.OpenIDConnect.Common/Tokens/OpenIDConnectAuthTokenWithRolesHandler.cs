@@ -23,7 +23,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
                 validationParameters.RoleClaimType = ConfigurationStore.GetRoleClaimType();
         }
 
-        protected override string[] GetProviderGroupIds(ClaimsPrincipal principal)
+        protected override string[] GetProviderGroupIds(ClaimsPrincipal principal, string? idToken = null)
         {
             var roleClaimType = ConfigurationStore.GetRoleClaimType();
 

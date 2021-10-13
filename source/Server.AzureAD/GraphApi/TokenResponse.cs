@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,11 +7,17 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.GraphApi
 {
     internal class TokenResponse
     {
-        public string token_type { get; set; }
-        public string scope { get; set; }
-        public int expires_in { get; set; }
-        public int ext_expires_in { get; set; }
-        public string access_token { get; set; }
-        public string refresh_token { get; set; }
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; } = string.Empty;
+        [JsonProperty("scope")]
+        public string Scope { get; set; } = string.Empty;
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
+        [JsonProperty("ext_expires_in")]
+        public int ExtExpiresIn { get; set; }
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; } = string.Empty;
+        [JsonProperty("refresh_token")]
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }

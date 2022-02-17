@@ -160,7 +160,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                         .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, Guid.NewGuid().ToString()) {HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue})
                         .WithCookie(new OctoCookie(UserAuthConstants.OctopusNonceCookieName, Guid.NewGuid().ToString()) {HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue});
 
-                    var authCookies = authCookieCreator.CreateAuthCookies(successResult.Value.IdentificationToken, TimeSpan.FromDays(20), request.IsHttps, stateFromRequest.UsingSecureConnection);
+                    var authCookies = authCookieCreator.CreateAuthCookies(successResult.Value.IdentificationToken, successResult.Value.SessionsToken, TimeSpan.FromDays(20), request.IsHttps, stateFromRequest.UsingSecureConnection);
 
                     foreach (var cookie in authCookies)
                     {

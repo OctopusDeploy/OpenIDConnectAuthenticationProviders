@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Octopus.Diagnostics" Version="2.1.1" />
+    <PackageReference Include="Octopus.Diagnostics" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>

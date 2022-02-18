@@ -15,8 +15,8 @@
   <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.3" />
     <PackageReference Include="Octopus.Diagnostics" Version="2.1.2" />
-    <PackageReference Include="Octopus.Server.Extensibility" Version="14.3.210-ankith-fm-bumpData" />
-    <PackageReference Include="Octopus.Server.Extensibility.Authentication" Version="11.1.78-ankith-fm-sessionsToken" />
+    <PackageReference Include="Octopus.Server.Extensibility" Version="14.3.215-ankith-fm-bumpData" />
+    <PackageReference Include="Octopus.Server.Extensibility.Authentication" Version="11.1.105-ankith-fm-sessionsToken" />
     <PackageReference Include="Octopus.Time" Version="1.1.5" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>

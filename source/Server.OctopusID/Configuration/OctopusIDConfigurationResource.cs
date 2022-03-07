@@ -14,14 +14,12 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Configuration
         /// NOTE: the following properties are here to control the order they appear on the settings page
         /// </summary>
 
-        [ReadOnly(true)]
         public override string? ClientId { get; set; }
-        [ReadOnly(true)]
+
         public override SensitiveValue? ClientSecret { get; set; }
-        [ReadOnly(true)]
+
         public override bool? AllowAutoUserCreation { get; set; }
 
-        [ReadOnly(true)]
         public new bool IsEnabled { get; set; }
     }
 }

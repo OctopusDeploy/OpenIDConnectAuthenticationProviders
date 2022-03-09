@@ -8,7 +8,7 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Configuration
     [Description("Sign in to your Octopus Server with an Octopus ID. [Learn more](https://g.octopushq.com/AuthOctopusID).")]
     class OctopusIDConfigurationResource : OpenIDConnectConfigurationWithClientSecretResource
     {
-        [ReadOnly(true)]
+        [Writeable]
         public override string? Issuer { get; set; }
 
         /// <summary>
@@ -21,10 +21,7 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Configuration
         [Writeable]
         public override SensitiveValue? ClientSecret { get; set; }
 
-        [ReadOnly(true)]
+        [Writeable]
         public override bool? AllowAutoUserCreation { get; set; }
-
-        [ReadOnly(true)]
-        public new bool IsEnabled { get; set; }
     }
 }

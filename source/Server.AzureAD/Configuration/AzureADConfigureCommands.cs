@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Octopus.Data.Model;
 using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
@@ -29,6 +30,14 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
             {
                 ConfigurationStore.Value.SetRoleClaimType(v);
                 Log.Info($"{ConfigurationSettingsName} RoleClaimType set to: {v}");
+            });
+            yield return new ConfigureCommandOption($"{ConfigurationSettingsName}ClientSecret=", "A client secret from the Octopus App Registration in AzureAD. Used for authenticating to the Microsoft Graph API when necessary", v =>
+            {
+                if (!string.IsNullOrEmpty(v))
+                {
+                    ConfigurationStore.Value.SetClientSecret(v.ToSensitiveString());
+                    Log.Info($"{ConfigurationSettingsName} ClientSecret was set.");
+                }
             });
         }
     }

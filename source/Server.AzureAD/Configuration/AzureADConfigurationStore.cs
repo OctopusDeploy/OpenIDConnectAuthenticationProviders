@@ -1,4 +1,5 @@
-﻿using Octopus.Data.Storage.Configuration;
+﻿using Octopus.Data.Model;
+using Octopus.Data.Storage.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
@@ -14,6 +15,16 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
         public AzureADConfigurationStore(
             IConfigurationStore configurationStore) : base(configurationStore)
         {
+        }
+
+        public void SetClientSecret(SensitiveString? clientSecret)
+        {
+            SetProperty(doc => doc.ClientSecret = clientSecret);
+        }
+
+        public SensitiveString? GetClientSecret()
+        {
+            return GetProperty(doc => doc.ClientSecret);
         }
     }
 }

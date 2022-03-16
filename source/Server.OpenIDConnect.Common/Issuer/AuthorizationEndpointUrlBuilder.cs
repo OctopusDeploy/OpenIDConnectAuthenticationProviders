@@ -16,10 +16,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             this.urlEncoder = urlEncoder;
         }
 
-        protected virtual string ResponseType => OpenIDConnectConfiguration.DefaultResponseType;
+        protected virtual string ResponseType => OpenIDConnectConfiguration.HybridResponseType;
+        protected virtual string PkceResponseType => OpenIDConnectConfiguration.AuthCodeResponseType;
         protected virtual string ResponseMode => OpenIDConnectConfiguration.DefaultResponseMode;
 
-        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string nonce, string? state = null)
+        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, bool pkce = false)
         {
             if (issuerConfiguration == null)
                 throw new ArgumentException("issuerConfiguration is required", nameof(issuerConfiguration));
@@ -27,15 +28,20 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             var issuerEndpoint = issuerConfiguration.AuthorizationEndpoint;
             var clientId = ConfigurationStore.GetClientId();
             var scope = ConfigurationStore.GetScope();
-            var responseType = ResponseType;
+            var responseType = pkce ? PkceResponseType : ResponseType;
             var responseMode = ResponseMode;
             var redirectUri = requestDirectoryPath.Trim('/') + ConfigurationStore.RedirectUri;
 
-            var url = $"{issuerEndpoint}?client_id={clientId}&scope={scope}&response_type={responseType}&response_mode={responseMode}&nonce={nonce}&redirect_uri={redirectUri}";
+            var url = $"{issuerEndpoint}?client_id={clientId}&scope={scope}&response_type={responseType}&response_mode={responseMode}&redirect_uri={redirectUri}";
             
             if (!string.IsNullOrWhiteSpace(state))
             {
                 url += $"&state={urlEncoder.UrlEncode(state)}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(nonce))
+            {
+                url += $"&nonce={nonce}";
             }
 
             return url;

@@ -48,6 +48,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common
 
         public string AuthenticateUri => $"/users/authenticate/{ConfigurationStore.ConfigurationSettingsName}";
 
+        public string AuthenticatePkceUri => $"/users/authenticate-pkce/{ConfigurationStore.ConfigurationSettingsName}";
+
         public AuthenticationProviderElement GetAuthenticationProviderElement()
         {
             var authenticationProviderElement = new AuthenticationProviderElement

@@ -14,8 +14,10 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps
             IGoogleAppsConfigurationStore configurationStore, GoogleAppsAuthenticationProvider authenticationProvider)
             : base(configurationStore, authenticationProvider)
         {
+            Add<GoogleAppsUserAuthenticationPkceAction>("POST", authenticationProvider.AuthenticatePkceUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IGoogleAppsConfigurationStore>(), null, "OpenIDConnect");
             Add<GoogleAppsUserAuthenticationAction>("POST", authenticationProvider.AuthenticateUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IGoogleAppsConfigurationStore>(), null, "OpenIDConnect");
             Add<GoogleAppsUserAuthenticatedAction>("POST", configurationStore.RedirectUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IGoogleAppsConfigurationStore>(), null, "OpenIDConnect");
+            Add<GoogleAppsUserAuthenticatedPkceAction>("GET", configurationStore.RedirectUri, RouteCategory.Raw, new AnonymousWhenEnabledEndpointInvocation<IGoogleAppsConfigurationStore>(), null, "OpenIDConnect");
         }
     }
 }

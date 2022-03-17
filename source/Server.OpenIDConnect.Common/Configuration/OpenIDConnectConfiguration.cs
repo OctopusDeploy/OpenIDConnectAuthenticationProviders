@@ -1,4 +1,5 @@
-﻿using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
+﻿using Octopus.Data.Model;
+using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration
 {
@@ -27,6 +28,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         public string? Issuer { get; set; }
 
         public string? ClientId { get; set; }
+
+        public SensitiveString? ClientSecret { get; set; }
 
         public string? Scope { get; set; }
 

@@ -16,11 +16,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             this.urlEncoder = urlEncoder;
         }
 
-        protected virtual string ResponseType => OpenIDConnectConfiguration.HybridResponseType;
-        protected virtual string PkceResponseType => OpenIDConnectConfiguration.AuthCodeResponseType;
+        protected virtual string ResponseType => ConfigurationStore.HasClientSecret ? OpenIDConnectConfiguration.AuthCodeResponseType : OpenIDConnectConfiguration.HybridResponseType;
         protected virtual string ResponseMode => OpenIDConnectConfiguration.DefaultResponseMode;
 
-        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, bool pkce = false, string? codeChallenge = null)
+        public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, string? codeChallenge = null)
         {
             if (issuerConfiguration == null)
                 throw new ArgumentException("issuerConfiguration is required", nameof(issuerConfiguration));
@@ -28,13 +27,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             var issuerEndpoint = issuerConfiguration.AuthorizationEndpoint;
             var clientId = ConfigurationStore.GetClientId();
             var scope = ConfigurationStore.GetScope();
-            var responseType = pkce ? PkceResponseType : ResponseType;
+            var responseType = ResponseType;
             var responseMode = ResponseMode;
             var redirectUri = requestDirectoryPath.Trim('/') + ConfigurationStore.RedirectUri;
 
             var url = $"{issuerEndpoint}?client_id={clientId}&scope={scope}&response_type={responseType}&redirect_uri={redirectUri}";
 
-            if (!pkce)
+            if (!ConfigurationStore.HasClientSecret)
             {
                 url += $"&response_mode={responseMode}";
 
@@ -49,6 +48,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             {
                 url += $"&nonce={nonce}";
             }
+
             if (!string.IsNullOrWhiteSpace(codeChallenge))
             {
                 url += $"&code_challenge={urlEncoder.UrlEncode(codeChallenge)}";

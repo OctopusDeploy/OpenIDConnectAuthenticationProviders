@@ -11,9 +11,9 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Issuer
         {
         }
 
-        public override string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, bool pkce = false, string? codeChallenge = null)
+        public override string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, string? codeChallenge = null)
         {
-            var url = base.Build(requestDirectoryPath, issuerConfiguration, nonce, state, pkce, codeChallenge);
+            var url = base.Build(requestDirectoryPath, issuerConfiguration, nonce, state, codeChallenge);
 
             var hd = ConfigurationStore.GetHostedDomain();
             if (!string.IsNullOrWhiteSpace(hd))

@@ -14,6 +14,7 @@ using Octopus.Server.Extensibility.Authentication.HostServices;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identities;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastructure;
+using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Tokens;
 using Octopus.Server.Extensibility.Authentication.Resources;
 using Octopus.Server.Extensibility.Authentication.Resources.Identities;
@@ -45,8 +46,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         readonly TIdentityCreator identityCreator;
         readonly IClock clock;
         readonly IUrlEncoder encoder;
+        readonly IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer;
 
-        protected readonly TStore ConfigurationStore;
+        TStore ConfigurationStore { get; }
 
         protected UserAuthenticatedPkceAction(
             ISystemLog log,
@@ -59,7 +61,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             ISleep sleep,
             TIdentityCreator identityCreator,
             IClock clock,
-            IUrlEncoder encoder)
+            IUrlEncoder encoder,
+            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer)
         {
             this.log = log;
             this.authTokenHandler = authTokenHandler;
@@ -72,6 +75,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             this.identityCreator = identityCreator;
             this.clock = clock;
             this.encoder = encoder;
+            this.identityProviderConfigDiscoverer = identityProviderConfigDiscoverer;
         }
 
         protected abstract string ProviderName { get; }
@@ -85,14 +89,14 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         {
             var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(ConfigurationStore.GetIssuer() ?? string.Empty);
             using var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, issuerConfig.TokenEndpoint);
+            var request = new HttpRequestMessage(HttpMethod.Get, issuerConfig.TokenEndpoint);
             var formValues = new Dictionary<string, string>
             {
                 ["grant_type"] = "authorization_code",
                 ["code"] = code,
                 ["redirect_uri"] = redirectUri,
                 ["client_id"] = ConfigurationStore.GetClientId()!,
-                ["client_secret"] = ConfigurationStore.GetClientSecret()!.Value
+                ["code_verifier"] = CodeVerifier.InMemoryCodeVerifier!
             };
             request.Content = new FormUrlEncodedContent(formValues);
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
@@ -102,8 +106,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task<IOctoResponseProvider> Handle(string code, string state, IOctoRequest request)
         {
+            var redirectUri = $"{request.Scheme}://{request.Host}{ConfigurationStore.RedirectUri}";
+            var response = await RequestAuthToken(code, redirectUri);
+
             // Step 1: Try and get all of the details from the request making sure there are no errors passed back from the external identity provider
-            var principalContainer = await authTokenHandler.GetPrincipalAsync(request.Form.ToDictionary(pair => pair.Key, pair => (string?)pair.Value), out var stateStringFromRequest);
+            var principalContainer = await authTokenHandler.GetPrincipalAsync(response, out var stateStringFromRequest);
             var principal = principalContainer.Principal;
             if (principal == null || !string.IsNullOrEmpty(principalContainer.Error))
             {
@@ -113,6 +120,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             // Step 2: Validate the state object we passed wasn't tampered with
             const string stateDescription = "As a security precaution, Octopus ensures the state object returned from the external identity provider matches what it expected.";
             var expectedStateHash = string.Empty;
+            stateStringFromRequest ??= state;
             if (request.Cookies.ContainsKey(UserAuthConstants.OctopusStateCookieName))
                 expectedStateHash = encoder.UrlDecode(request.Cookies[UserAuthConstants.OctopusStateCookieName]);
             if (string.IsNullOrWhiteSpace(expectedStateHash))
@@ -120,7 +128,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 return BadRequest($"User login failed: Missing State Hash Cookie. {stateDescription} In this case the Cookie containing the SHA256 hash of the state object is missing from the request.");
             }
 
-            var stateFromRequestHash = State.Protect(stateStringFromRequest);
+            var stateFromRequestHash = Infrastructure.State.Protect(stateStringFromRequest);
             if (stateFromRequestHash != expectedStateHash)
             {
                 return BadRequest($"User login failed: Tampered State. {stateDescription} In this case the state object looks like it has been tampered with. The state object is '{stateStringFromRequest}'. The SHA256 hash of the state was expected to be '{expectedStateHash}' but was '{stateFromRequestHash}'.");

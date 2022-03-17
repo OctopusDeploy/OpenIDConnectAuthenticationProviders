@@ -2,6 +2,6 @@
 {
     public interface IAuthorizationEndpointUrlBuilder
     {
-        string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, bool pkce = false);
+        string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, bool pkce = false, string? codeChallenge = null);
     }
 }

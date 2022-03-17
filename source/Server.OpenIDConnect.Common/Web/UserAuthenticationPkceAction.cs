@@ -72,6 +72,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
                 var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
+                var codeVerifier = CodeVerifier.GenerateUrlSafeCodeVerifier();
+                var codeChallenge = CodeChallenge.CreateS256CodeChallenge(codeVerifier);
+
                 var stateString = JsonConvert.SerializeObject(state);
                 var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, state: stateString, pkce: true);
 

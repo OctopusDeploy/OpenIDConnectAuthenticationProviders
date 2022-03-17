@@ -5,6 +5,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
 {
     public static class CodeVerifier
     {
+        public static string? InMemoryCodeVerifier { get; private set; }
         static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         public static string GenerateUrlSafeCodeVerifier()
@@ -12,6 +13,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
             var data = new byte[32];
             Rng.GetBytes(data);
             var codeVerifier = Convert.ToBase64String(data).TrimEnd('=').Replace("/", string.Empty).Replace("+", string.Empty);
+            InMemoryCodeVerifier = codeVerifier;
             return codeVerifier;
         }
     }

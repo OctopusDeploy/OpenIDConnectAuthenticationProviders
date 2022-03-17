@@ -4,6 +4,7 @@ using Octopus.Server.Extensibility.Authentication.GoogleApps.Identities;
 using Octopus.Server.Extensibility.Authentication.GoogleApps.Tokens;
 using Octopus.Server.Extensibility.Authentication.HostServices;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastructure;
+using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web;
 using Octopus.Server.Extensibility.HostServices.Web;
 using Octopus.Time;
@@ -23,8 +24,8 @@ namespace Octopus.Server.Extensibility.Authentication.GoogleApps.Web
             IInvalidLoginTracker loginTracker,
             ISleep sleep,
             IGoogleAppsIdentityCreator identityCreator,
-            IClock clock, IUrlEncoder encoder)
-            : base(log, authTokenHandler, principalToUserResourceMapper, userStore, configurationStore, authCookieCreator, loginTracker, sleep, identityCreator, clock, encoder)
+            IClock clock, IUrlEncoder encoder, IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer)
+            : base(log, authTokenHandler, principalToUserResourceMapper, userStore, configurationStore, authCookieCreator, loginTracker, sleep, identityCreator, clock, encoder, identityProviderConfigDiscoverer)
         {
         }
 

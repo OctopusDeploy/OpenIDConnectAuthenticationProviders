@@ -107,7 +107,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task<IOctoResponseProvider> Handle(string code, string state, IOctoRequest request)
         {
-            var redirectUri = $"{request.Scheme}://{request.Host}{ConfigurationStore.RedirectUri}";
+            var host = request.Headers.ContainsKey("Host") ? request.Headers["Host"].Single() : request.Host;
+            var redirectUri = $"{request.Scheme}://{host}{ConfigurationStore.RedirectUri}";
             var response = await RequestAuthToken(code, redirectUri);
 
             // Step 1: Try and get all of the details from the request making sure there are no errors passed back from the external identity provider
@@ -137,38 +138,14 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
             var stateFromRequest = JsonConvert.DeserializeObject<LoginState>(stateStringFromRequest ?? string.Empty);
 
-            // Step 3: Validate the nonce is as we expected to prevent replay attacks
-            const string nonceDescription = "As a security precaution to prevent replay attacks, Octopus ensures the nonce returned in the claims from the external identity provider matches what it expected.";
-
-            var expectedNonceHash = string.Empty;
-            if (request.Cookies.ContainsKey(UserAuthConstants.OctopusNonceCookieName))
-                expectedNonceHash = encoder.UrlDecode(request.Cookies[UserAuthConstants.OctopusNonceCookieName]);
-
-            if (string.IsNullOrWhiteSpace(expectedNonceHash))
-            {
-                return BadRequest($"User login failed: Missing Nonce Hash Cookie. {nonceDescription} In this case the Cookie containing the SHA256 hash of the nonce is missing from the request.");
-            }
-
-            var nonceFromClaims = principal.Claims.FirstOrDefault(c => c.Type == "nonce");
-            if (nonceFromClaims == null)
-            {
-                return BadRequest($"User login failed: Missing Nonce Claim. {nonceDescription} In this case the 'nonce' claim is missing from the security token.");
-            }
-
-            var nonceFromClaimsHash = Nonce.Protect(nonceFromClaims.Value);
-            if (nonceFromClaimsHash != expectedNonceHash)
-            {
-                return BadRequest($"User login failed: Tampered Nonce. {nonceDescription} In this case the nonce looks like it has been tampered with or reused. The nonce is '{nonceFromClaims}'. The SHA256 hash of the state was expected to be '{expectedNonceHash}' but was '{nonceFromClaimsHash}'.");
-            }
-
-            // Step 4: Now the integrity of the request has been validated we can figure out which Octopus User this represents
+            // Step 3: Now the integrity of the request has been validated we can figure out which Octopus User this represents
             var authenticationCandidate = principalToUserResourceMapper.MapToUserResource(principal);
             if (authenticationCandidate.Username == null)
             {
                 return BadRequest("Unable to determine username.");
             }
 
-            // Step 4a: Check if this authentication attempt is already being banned
+            // Step 3a: Check if this authentication attempt is already being banned
             var action = loginTracker.BeforeAttempt(authenticationCandidate.Username, request.Host);
             if (action == InvalidLoginAction.Ban)
             {
@@ -177,7 +154,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
             using (var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1)))
             {
-                // Step 4b: Try to get or create a the Octopus User this external identity represents
+                // Step 3b: Try to get or create a the Octopus User this external identity represents
                 var userResult = GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, cts.Token);
                 if (userResult is ISuccessResult<IUser> successResult)
                 {
@@ -208,10 +185,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                     return octoResponse;
                 }
 
-                // Step 5: Handle other types of failures
+                // Step 4: Handle other types of failures
                 loginTracker.RecordFailure(authenticationCandidate.Username, request.Host);
 
-                // Step 5a: Slow this potential attacker down a bit since they seem to keep failing
+                // Step 4a: Slow this potential attacker down a bit since they seem to keep failing
                 if (action == InvalidLoginAction.Slow)
                 {
                     sleep.For(1000);

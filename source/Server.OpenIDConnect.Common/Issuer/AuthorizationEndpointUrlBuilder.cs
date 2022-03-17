@@ -51,8 +51,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
 
             if (!string.IsNullOrWhiteSpace(codeChallenge))
             {
-                url += $"&code_challenge={urlEncoder.UrlEncode(codeChallenge)}";
-                url += $"&code_challenge_method=S256";
+                url += $"&code_challenge={codeChallenge}";
+                url += "&code_challenge_method=S256";
             }
 
             return url;

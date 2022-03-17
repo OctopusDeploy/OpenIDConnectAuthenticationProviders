@@ -92,8 +92,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         IOctoResponseProvider BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginState state, IssuerConfiguration issuerConfig)
         {
-            var codeVerifier = CodeVerifier.GenerateUrlSafeCodeVerifier();
-            var codeChallenge = CodeChallenge.CreateS256CodeChallenge(codeVerifier);
+            var codeVerifier = CodeVerifier.GenerateCodeVerifier();
+            var codeChallenge = CodeChallenge.GenerateCodeChallenge(codeVerifier);
 
             var stateString = JsonConvert.SerializeObject(state);
             var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, state: stateString, codeChallenge: codeChallenge);

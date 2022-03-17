@@ -8,14 +8,14 @@ using Octopus.Server.Extensibility.HostServices.Web;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration
 {
-    public abstract class OpenIdConnectConfigureCommands<TStore> : IContributeToConfigureCommand
+    public abstract class OpenIDConnectConfigureCommands<TStore> : IContributeToConfigureCommand
         where TStore : IOpenIDConnectConfigurationStore
     {
         protected readonly ISystemLog Log;
         protected readonly Lazy<TStore> ConfigurationStore;
         readonly Lazy<IWebPortalConfigurationStore> webPortalConfigurationStore;
 
-        protected OpenIdConnectConfigureCommands(
+        protected OpenIDConnectConfigureCommands(
             ISystemLog log,
             Lazy<TStore> configurationStore,
             Lazy<IWebPortalConfigurationStore> webPortalConfigurationStore)

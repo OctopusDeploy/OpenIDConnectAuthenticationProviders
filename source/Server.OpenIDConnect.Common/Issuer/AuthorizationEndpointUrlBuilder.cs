@@ -36,19 +36,15 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             if (!ConfigurationStore.HasClientSecret)
             {
                 url += $"&response_mode={responseMode}";
-
             }
-
             if (!string.IsNullOrWhiteSpace(state))
             {
                 url += $"&state={urlEncoder.UrlEncode(state)}";
             }
-
             if (!string.IsNullOrWhiteSpace(nonce))
             {
                 url += $"&nonce={nonce}";
             }
-
             if (!string.IsNullOrWhiteSpace(codeChallenge))
             {
                 url += $"&code_challenge={codeChallenge}";

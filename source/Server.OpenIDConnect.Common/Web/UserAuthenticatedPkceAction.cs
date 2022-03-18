@@ -30,11 +30,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         where TAuthTokenHandler : IAuthTokenHandler
         where TIdentityCreator : IIdentityCreator
     {
-        static readonly BadRequestRegistration LoginFailed = new BadRequestRegistration("User login failed");
-        static readonly RedirectRegistration Redirect = new RedirectRegistration("Redirects back to the Octopus portal");
+        readonly BadRequestRegistration loginFailed = new("User login failed");
+        readonly RedirectRegistration redirect = new("Redirects back to the Octopus portal");
 
-        static readonly RequiredQueryParameterProperty<string> Code = new("code", "Authorization code provided by the identity provider");
-        static readonly OptionalQueryParameterProperty<string> State = new("state", "The state value associated with the authentication session");
+        readonly RequiredQueryParameterProperty<string> codeParameter = new("code", "Authorization code provided by the identity provider");
+        readonly OptionalQueryParameterProperty<string> stateParameter = new("state", "The state value associated with the authentication session");
 
         readonly ISystemLog log;
         readonly TAuthTokenHandler authTokenHandler;
@@ -82,7 +82,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         public async Task<IOctoResponseProvider> ExecuteAsync(IOctoRequest request)
         {
-            return await request.HandleAsync(Code, State, (code, state) => Handle(code, state, request));
+            return await request.HandleAsync(codeParameter, stateParameter, (code, state) => Handle(code, state, request));
         }
 
         async Task<IDictionary<string, string?>> RequestAuthToken(string code, string redirectUri)
@@ -97,12 +97,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 ["redirect_uri"] = redirectUri,
                 ["client_id"] = ConfigurationStore.GetClientId()!,
                 ["client_secret"] = ConfigurationStore.GetClientSecret()!.Value,
-                ["code_verifier"] = CodeVerifier.InMemoryCodeVerifier!
+                ["code_verifier"] = Pkce.InMemoryCodeVerifier!
             };
             request.Content = new FormUrlEncodedContent(formValues);
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
             var body = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Dictionary<string, string?>>(body);
+            return JsonConvert.DeserializeObject<Dictionary<string, string?>>(body)!;
         }
 
         async Task<IOctoResponseProvider> Handle(string code, string state, IOctoRequest request)
@@ -170,7 +170,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                         return BadRequest($"The Octopus User Account '{authenticationCandidate.Username}' is a Service Account, which are prevented from using Octopus interactively. Service Accounts are designed to authorize external systems to access the Octopus API using an API Key.");
                     }
 
-                    var octoResponse = Redirect.Response(stateFromRequest.RedirectAfterLoginTo)
+                    var octoResponse = redirect.Response(stateFromRequest.RedirectAfterLoginTo)
                         .WithHeader("Expires", new[] {DateTime.UtcNow.AddYears(1).ToString("R", DateTimeFormatInfo.InvariantInfo)})
                         .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, Guid.NewGuid().ToString()) {HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue})
                         .WithCookie(new OctoCookie(UserAuthConstants.OctopusNonceCookieName, Guid.NewGuid().ToString()) {HttpOnly = true, Secure = false, Expires = DateTimeOffset.MinValue});
@@ -201,7 +201,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         IOctoResponseProvider BadRequest(string message)
         {
             log.Error(message);
-            return LoginFailed.Response(message);
+            return loginFailed.Response(message);
         }
 
         IResultFromExtension<IUser> GetOrCreateUser(UserResource userResource, string[] groups, CancellationToken cancellationToken)

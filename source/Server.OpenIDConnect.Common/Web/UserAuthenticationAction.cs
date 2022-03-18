@@ -92,8 +92,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         IOctoResponseProvider BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginState state, IssuerConfiguration issuerConfig)
         {
-            var codeVerifier = CodeVerifier.GenerateCodeVerifier();
-            var codeChallenge = CodeChallenge.GenerateCodeChallenge(codeVerifier);
+            var codeVerifier = Pkce.GenerateCodeVerifier();
+            var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);
 
             var stateString = JsonConvert.SerializeObject(state);
             var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, state: stateString, codeChallenge: codeChallenge);
@@ -104,6 +104,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         IOctoResponseProvider BuildHybridResponse(LoginRedirectLinkRequestModel model, LoginState state, IssuerConfiguration issuerConfig)
         {
+            // Use a non-deterministic nonce to prevent replay attacks
             var nonce = Nonce.GenerateUrlSafeNonce();
             var stateString = JsonConvert.SerializeObject(state);
             var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, nonce, stateString);

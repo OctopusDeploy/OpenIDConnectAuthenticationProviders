@@ -56,34 +56,22 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             if (!string.IsNullOrWhiteSpace(ConfigurationStore.GetNameClaimType()))
                 validationParameters.NameClaimType = ConfigurationStore.GetNameClaimType();
 
-            var tokenToValidate = idToken;
-            if (string.IsNullOrWhiteSpace(tokenToValidate))
-            {
-                // if we're validating the id_token then the audience is based on the client_id, not the issuer/resource like access_token
-                tokenToValidate = idToken;
-                validationParameters.ValidAudience = ConfigurationStore.GetClientId();
-            }
-
             SetIssuerSpecificTokenValidationParameters(validationParameters);
 
             var jwt = new JwtSecurityToken(idToken);
 
             if (hmacAlgorithms.Contains(jwt.Header.Alg))
             {
-                principal = ValidateUsingSharedSecret(validationParameters, tokenToValidate);
+                principal = ValidateUsingSharedSecret(validationParameters, idToken);
             }
             else
             {
-                principal = await ValidateUsingIssuerCertificate(validationParameters, tokenToValidate, issuerConfig);
+                principal = await ValidateUsingIssuerCertificate(validationParameters, idToken, issuerConfig);
             }
 
-            var error = string.Empty;
-            DoIssuerSpecificClaimsValidation(principal, out error);
+            DoIssuerSpecificClaimsValidation(principal, out string error);
 
-            if (string.IsNullOrWhiteSpace(error))
-                return new ClaimsPrincipleContainer(principal, GetProviderGroupIds(principal));
-
-            return new ClaimsPrincipleContainer(error);
+            return string.IsNullOrWhiteSpace(error) ? new ClaimsPrincipleContainer(principal, GetProviderGroupIds(principal)) : new ClaimsPrincipleContainer(error);
         }
 
         ClaimsPrincipal ValidateUsingSharedSecret(TokenValidationParameters validationParameters, string? tokenToValidate)

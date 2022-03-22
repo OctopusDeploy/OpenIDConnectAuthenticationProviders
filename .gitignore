@@ -68,3 +68,7 @@ source/OctopusTools.v2.ncrunchsolution
 TestResult.xml
 *.DS_Store
 **/*.DS_Store
+
+**/.terraform
+**/terraform.tfstate*
+**/.terraform*

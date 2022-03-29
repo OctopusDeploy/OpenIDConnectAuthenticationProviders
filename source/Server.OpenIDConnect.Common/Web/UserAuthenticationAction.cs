@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Octopus.Diagnostics;
@@ -8,10 +9,13 @@ using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastru
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.Resources;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Web.Api;
+using Octopus.Server.Extensibility.Mediator;
+using Octopus.Server.MessageContracts.Features.BlobStorage;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 {
-    public abstract class UserAuthenticationAction<TStore> : IAsyncApiAction
+    public abstract partial class UserAuthenticationAction<TStore> : IAsyncApiAction
         where TStore : IOpenIDConnectConfigurationStore
     {
         static readonly BadRequestRegistration Disabled = new BadRequestRegistration("This authentication provider is disabled.");
@@ -26,6 +30,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         protected readonly TStore ConfigurationStore;
         readonly IApiActionModelBinder modelBinder;
         readonly IAuthenticationConfigurationStore authenticationConfigurationStore;
+        readonly IMediator mediator;
 
         protected UserAuthenticationAction(
             ISystemLog log,
@@ -33,11 +38,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
             IAuthorizationEndpointUrlBuilder urlBuilder,
             IApiActionModelBinder modelBinder,
-            IAuthenticationConfigurationStore authenticationConfigurationStore)
+            IAuthenticationConfigurationStore authenticationConfigurationStore,
+            IMediator mediator)
         {
             this.log = log;
             this.modelBinder = modelBinder;
             this.authenticationConfigurationStore = authenticationConfigurationStore;
+            this.mediator = mediator;
             ConfigurationStore = configurationStore;
             this.identityProviderConfigDiscoverer = identityProviderConfigDiscoverer;
             this.urlBuilder = urlBuilder;
@@ -73,7 +80,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
                 var response = ConfigurationStore.HasClientSecret
-                    ? BuildAuthorizationCodePkceResponse(model, state, issuerConfig)
+                    ? await BuildAuthorizationCodePkceResponse(model, new LoginStateWithSessionId(state.RedirectAfterLoginTo, state.UsingSecureConnection, Guid.NewGuid()), issuerConfig)
                     : BuildHybridResponse(model, state, issuerConfig);
 
                 return response;
@@ -90,18 +97,21 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             }
         }
 
-        IOctoResponseProvider BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginState state, IssuerConfiguration issuerConfig)
+        async Task<IOctoResponseProvider> BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginStateWithSessionId state, IssuerConfiguration issuerConfig)
         {
             var codeVerifier = Pkce.GenerateCodeVerifier();
-            var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);
+            var pkceBlob = new PkceBlob(state.SessionId, codeVerifier, DateTimeOffset.UtcNow);
+            await mediator.Do(new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, state.SessionId.ToString(), JsonSerializer.SerializeToUtf8Bytes(pkceBlob)), new CancellationToken());
 
             var stateString = JsonConvert.SerializeObject(state);
+            var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);
             var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, state: stateString, codeChallenge: codeChallenge);
             var response = Result.Response(new LoginRedirectLinkResponseModel {ExternalAuthenticationUrl = url})
                 .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, State.Protect(stateString)) {HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)});
             return response;
         }
 
+        // For backwards compatibility - if no client secret is specified then the implicit flow will attempt to be used
         IOctoResponseProvider BuildHybridResponse(LoginRedirectLinkRequestModel model, LoginState state, IssuerConfiguration issuerConfig)
         {
             // Use a non-deterministic nonce to prevent replay attacks

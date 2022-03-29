@@ -7,6 +7,7 @@ using Octopus.Server.Extensibility.Authentication.HostServices;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web;
 using Octopus.Server.Extensibility.HostServices.Web;
+using Octopus.Server.Extensibility.Mediator;
 using Octopus.Time;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
@@ -25,7 +26,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             IAzureADIdentityCreator identityCreator,
             IClock clock,
             IUrlEncoder encoder,
-            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer) :
+            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
+            IMediator mediator) :
             base(
                 log,
                 authTokenHandler,
@@ -38,7 +40,7 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
                 identityCreator,
                 clock,
                 encoder,
-                identityProviderConfigDiscoverer)
+                identityProviderConfigDiscoverer, mediator)
         {
         }
 

@@ -8,7 +8,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
     public static class Pkce
     {
         const string UnreservedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-        public static string? InMemoryCodeVerifier { get; private set; }
 
         public static string GenerateCodeVerifier(int size = 128)
         {
@@ -24,7 +23,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
             }
 
             var codeVerifier = new string(highEntropyCryptograph);
-            InMemoryCodeVerifier = codeVerifier;
             return codeVerifier;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -16,11 +17,12 @@ using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identitie
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastructure;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Tokens;
-using Octopus.Server.Extensibility.Authentication.Resources;
 using Octopus.Server.Extensibility.Authentication.Resources.Identities;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Web.Api;
 using Octopus.Server.Extensibility.HostServices.Web;
+using Octopus.Server.Extensibility.Mediator;
 using Octopus.Server.Extensibility.Results;
+using Octopus.Server.MessageContracts.Features.BlobStorage;
 using Octopus.Time;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
@@ -47,11 +49,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         readonly IClock clock;
         readonly IUrlEncoder encoder;
         readonly IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer;
+        readonly IMediator mediator;
 
         TStore ConfigurationStore { get; }
 
-        protected UserAuthenticatedPkceAction(
-            ISystemLog log,
+        protected UserAuthenticatedPkceAction(ISystemLog log,
             TAuthTokenHandler authTokenHandler,
             IPrincipalToUserResourceMapper principalToUserResourceMapper,
             IUpdateableUserStore userStore,
@@ -62,7 +64,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             TIdentityCreator identityCreator,
             IClock clock,
             IUrlEncoder encoder,
-            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer)
+            IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer, IMediator mediator)
         {
             this.log = log;
             this.authTokenHandler = authTokenHandler;
@@ -76,6 +78,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             this.clock = clock;
             this.encoder = encoder;
             this.identityProviderConfigDiscoverer = identityProviderConfigDiscoverer;
+            this.mediator = mediator;
         }
 
         protected abstract string ProviderName { get; }
@@ -85,11 +88,23 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return await request.HandleAsync(codeParameter, stateParameter, (code, state) => Handle(code, state, request));
         }
 
-        async Task<IDictionary<string, string?>> RequestAuthToken(string code, string redirectUri)
+        async Task<IDictionary<string, string?>> RequestAuthToken(string code, string redirectUri, Guid sessionId)
         {
             var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(ConfigurationStore.GetIssuer() ?? string.Empty);
             using var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, issuerConfig.TokenEndpoint);
+
+            var allBlobsBelongingToExtension = await mediator.Request(new GetAllBlobsRequest(ConfigurationStore.ConfigurationSettingsName), new CancellationToken());
+            var blobs = allBlobsBelongingToExtension.Blobs.Select(b => JsonConvert.DeserializeObject<PkceBlob>(Encoding.UTF8.GetString(b))!).ToList();
+            foreach (var blob in blobs)
+            {
+                // Any expired blobs should be removed as well - currently using a 30 second timer
+                if (blob.SessionId == sessionId || DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalSeconds > 30)
+                {
+                    await mediator.Do(new DeleteBlobCommand(ConfigurationStore.ConfigurationSettingsName, blob.SessionId.ToString()), new CancellationToken());
+                }
+            }
+
             var formValues = new Dictionary<string, string>
             {
                 ["grant_type"] = "authorization_code",
@@ -97,9 +112,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 ["redirect_uri"] = redirectUri,
                 ["client_id"] = ConfigurationStore.GetClientId()!,
                 ["client_secret"] = ConfigurationStore.GetClientSecret()!.Value,
-                ["code_verifier"] = Pkce.InMemoryCodeVerifier!
+                ["code_verifier"] = blobs.Single(b => b.SessionId == sessionId).CodeVerifier
             };
-            request.Content = new FormUrlEncodedContent(formValues);
+            request.Content = new FormUrlEncodedContent(formValues!);
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
             var body = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Dictionary<string, string?>>(body)!;
@@ -109,7 +124,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         {
             var host = request.Headers.ContainsKey("Host") ? request.Headers["Host"].Single() : request.Host;
             var redirectUri = $"{request.Scheme}://{host}{ConfigurationStore.RedirectUri}";
-            var response = await RequestAuthToken(code, redirectUri);
+            var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithSessionId>(state);
+            var response = await RequestAuthToken(code, redirectUri, stateFromRequest!.SessionId);
 
             // Step 1: Try and get all of the details from the request making sure there are no errors passed back from the external identity provider
             var principalContainer = await authTokenHandler.GetPrincipalAsync(response, out var stateStringFromRequest);
@@ -130,14 +146,12 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 return BadRequest($"User login failed: Missing State Hash Cookie. {stateDescription} In this case the Cookie containing the SHA256 hash of the state object is missing from the request.");
             }
 
-            var stateFromRequestHash = Infrastructure.State.Protect(stateStringFromRequest);
+            var stateFromRequestHash = State.Protect(stateStringFromRequest);
+
             if (stateFromRequestHash != expectedStateHash)
             {
                 return BadRequest($"User login failed: Tampered State. {stateDescription} In this case the state object looks like it has been tampered with. The state object is '{stateStringFromRequest}'. The SHA256 hash of the state was expected to be '{expectedStateHash}' but was '{stateFromRequestHash}'.");
             }
-
-            var stateFromRequest = JsonConvert.DeserializeObject<LoginState>(stateStringFromRequest ?? string.Empty);
-
             // Step 3: Now the integrity of the request has been validated we can figure out which Octopus User this represents
             var authenticationCandidate = principalToUserResourceMapper.MapToUserResource(principal);
             if (authenticationCandidate.Username == null)

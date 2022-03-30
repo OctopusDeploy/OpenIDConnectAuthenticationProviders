@@ -65,6 +65,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
             yield return new ConfigureCommandOption($"{ConfigurationSettingsName}ClientSecret=", $"Follow our documentation to find the Client Secret for {ConfigurationSettingsName}.", v =>
             {
                 ConfigurationStore.Value.SetClientSecret(v.ToSensitiveString());
+                Log.Info($"{ConfigurationSettingsName} ClientSecret set to: {v}");
             }, hide: hide);
         }
 

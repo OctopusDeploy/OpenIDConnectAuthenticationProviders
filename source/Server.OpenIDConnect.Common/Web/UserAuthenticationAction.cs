@@ -15,7 +15,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 {
-    public abstract partial class UserAuthenticationAction<TStore> : IAsyncApiAction
+    public abstract class UserAuthenticationAction<TStore> : IAsyncApiAction
         where TStore : IOpenIDConnectConfigurationStore
     {
         static readonly BadRequestRegistration Disabled = new BadRequestRegistration("This authentication provider is disabled.");

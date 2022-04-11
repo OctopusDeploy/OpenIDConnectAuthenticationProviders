@@ -18,29 +18,27 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             ISystemLog log,
             IAzureADAuthTokenHandler authTokenHandler,
             IAzureADPrincipalToUserResourceMapper principalToUserResourceMapper,
-            IUpdateableUserStore userStore,
             IAzureADConfigurationStore configurationStore,
             IAuthCookieCreator authCookieCreator,
             IInvalidLoginTracker loginTracker,
             ISleep sleep,
             IAzureADIdentityCreator identityCreator,
-            IClock clock,
             IUrlEncoder encoder,
             IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
-            IMediator mediator) :
-            base(
-                log,
+            IMediator mediator,
+            IUserService service)
+            : base(log,
                 authTokenHandler,
                 principalToUserResourceMapper,
-                userStore,
                 configurationStore,
                 authCookieCreator,
                 loginTracker,
                 sleep,
                 identityCreator,
-                clock,
                 encoder,
-                identityProviderConfigDiscoverer, mediator)
+                identityProviderConfigDiscoverer,
+                mediator,
+                service)
         {
         }
 

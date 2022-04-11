@@ -4,13 +4,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infra
 {
     public class PkceBlob
     {
-        public Guid SessionId { get; }
+        public Guid RequestId { get; }
         public string CodeVerifier { get; }
         public DateTimeOffset TimeStamp { get; }
 
-        public PkceBlob(Guid sessionId, string codeVerifier, DateTimeOffset timeStamp)
+        public PkceBlob(Guid requestId, string codeVerifier, DateTimeOffset timeStamp)
         {
-            SessionId = sessionId;
+            RequestId = requestId;
             CodeVerifier = codeVerifier;
             TimeStamp = timeStamp;
         }

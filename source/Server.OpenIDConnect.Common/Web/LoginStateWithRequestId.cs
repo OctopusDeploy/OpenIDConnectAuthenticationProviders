@@ -3,15 +3,15 @@ using Octopus.Server.Extensibility.Authentication.Resources;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 {
-    class LoginStateWithSessionId : LoginState
+    internal class LoginStateWithRequestId : LoginState
     {
-        public Guid SessionId { get; set; }
+        public Guid RequestId { get; }
 
-        public LoginStateWithSessionId(string redirectAfterLoginTo, bool usingSecureConnection, Guid sessionId)
+        public LoginStateWithRequestId(string redirectAfterLoginTo, bool usingSecureConnection, Guid requestId)
         {
             RedirectAfterLoginTo = redirectAfterLoginTo;
             UsingSecureConnection = usingSecureConnection;
-            SessionId = sessionId;
+            RequestId = requestId;
         }
     }
 }

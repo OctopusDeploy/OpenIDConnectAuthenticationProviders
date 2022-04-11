@@ -19,17 +19,27 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID.Web
             ISystemLog log,
             IOctopusIDAuthTokenHandler authTokenHandler,
             IPrincipalToUserResourceMapper principalToUserResourceMapper,
-            IUpdateableUserStore userStore,
             IOctopusIDConfigurationStore configurationStore,
             IAuthCookieCreator authCookieCreator,
             IInvalidLoginTracker loginTracker,
             ISleep sleep,
             IOctopusIDIdentityCreator identityCreator,
-            IClock clock,
             IUrlEncoder encoder,
             IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
-            IMediator mediator)
-            : base(log, authTokenHandler, principalToUserResourceMapper, userStore, configurationStore, authCookieCreator, loginTracker, sleep, identityCreator, clock, encoder, identityProviderConfigDiscoverer, mediator)
+            IMediator mediator,
+            IUserService service)
+            : base(log,
+                authTokenHandler,
+                principalToUserResourceMapper,
+                configurationStore,
+                authCookieCreator,
+                loginTracker,
+                sleep,
+                identityCreator,
+                encoder,
+                identityProviderConfigDiscoverer,
+                mediator,
+                service)
         {
         }
 

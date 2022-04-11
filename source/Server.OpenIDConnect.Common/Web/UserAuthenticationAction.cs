@@ -80,7 +80,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
                 var response = ConfigurationStore.HasClientSecret
-                    ? await BuildAuthorizationCodePkceResponse(model, new LoginStateWithSessionId(state.RedirectAfterLoginTo, state.UsingSecureConnection, Guid.NewGuid()), issuerConfig)
+                    ? await BuildAuthorizationCodePkceResponse(model, new LoginStateWithRequestId(state.RedirectAfterLoginTo, state.UsingSecureConnection, Guid.NewGuid()), issuerConfig)
                     : BuildHybridResponse(model, state, issuerConfig);
 
                 return response;
@@ -97,11 +97,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             }
         }
 
-        async Task<IOctoResponseProvider> BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginStateWithSessionId state, IssuerConfiguration issuerConfig)
+        async Task<IOctoResponseProvider> BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginStateWithRequestId state, IssuerConfiguration issuerConfig)
         {
             var codeVerifier = Pkce.GenerateCodeVerifier();
-            var pkceBlob = new PkceBlob(state.SessionId, codeVerifier, DateTimeOffset.UtcNow);
-            await mediator.Do(new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, state.SessionId.ToString(), JsonSerializer.SerializeToUtf8Bytes(pkceBlob)), new CancellationToken());
+            var pkceBlob = new PkceBlob(state.RequestId, codeVerifier, DateTimeOffset.UtcNow);
+            await mediator.Do(new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, state.RequestId.ToString(), JsonSerializer.SerializeToUtf8Bytes(pkceBlob)), new CancellationToken());
 
             var stateString = JsonConvert.SerializeObject(state);
             var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);

@@ -36,7 +36,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             this.keyRetriever = keyRetriever;
         }
 
-        protected async Task<ClaimsPrincipleContainer> GetPrincipalFromToken(string? accessToken, string? idToken)
+        protected async Task<ClaimsPrincipalContainer> GetPrincipalFromToken(string? accessToken, string? idToken)
         {
             ClaimsPrincipal? principal = null;
 
@@ -71,7 +71,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
 
             DoIssuerSpecificClaimsValidation(principal, out string error);
 
-            return string.IsNullOrWhiteSpace(error) ? new ClaimsPrincipleContainer(principal, GetProviderGroupIds(principal)) : new ClaimsPrincipleContainer(error);
+            return string.IsNullOrWhiteSpace(error) ? new ClaimsPrincipalContainer(principal, GetProviderGroupIds(principal)) : new ClaimsPrincipalContainer(error);
         }
 
         ClaimsPrincipal ValidateUsingSharedSecret(TokenValidationParameters validationParameters, string? tokenToValidate)

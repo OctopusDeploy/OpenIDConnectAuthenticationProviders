@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Octopus.Data;
 using Octopus.Data.Model.User;
-using Octopus.Data.Storage.User;
 using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.HostServices;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
@@ -18,11 +16,9 @@ using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identitie
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastructure;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Tokens;
-using Octopus.Server.Extensibility.Authentication.Resources.Identities;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Web.Api;
 using Octopus.Server.Extensibility.HostServices.Web;
 using Octopus.Server.Extensibility.Mediator;
-using Octopus.Server.Extensibility.Results;
 using Octopus.Server.MessageContracts.Features.BlobStorage;
 using Octopus.Time;
 

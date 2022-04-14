@@ -14,9 +14,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         const string StateDescription = "As a security precaution, Octopus ensures the state object returned from the external identity provider matches what it expected.";
         const string NonceDescription = "As a security precaution to prevent replay attacks, Octopus ensures the nonce returned in the claims from the external identity provider matches what it expected.";
 
-        public static void ValidatePrincipalContainer(ClaimsPrincipal? principal, ClaimsPrincipalContainer principalContainer)
+        public static void ValidatePrincipalContainer(ClaimsPrincipalContainer principalContainer)
         {
-            if (principal == null || !string.IsNullOrEmpty(principalContainer.Error))
+            if (principalContainer.Principal == null || !string.IsNullOrEmpty(principalContainer.Error))
             {
                 throw new FailedAuthenticationException($"The response from the external identity provider contained an error: {principalContainer.Error}");
             }

@@ -100,11 +100,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         async Task<IOctoResponseProvider> BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginStateWithRequestId state, IssuerConfiguration issuerConfig)
         {
             var codeVerifier = Pkce.GenerateCodeVerifier();
-            var pkceBlob = new PkceBlob(state.RequestId, codeVerifier, DateTimeOffset.UtcNow);
-            await mediator.Do(new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, state.RequestId.ToString(), JsonSerializer.SerializeToUtf8Bytes(pkceBlob)), new CancellationToken());
+            await InsertPkceBlob(new PkceBlob(state.RequestId, codeVerifier, DateTimeOffset.UtcNow), state.RequestId.ToString());
 
-            var stateString = JsonConvert.SerializeObject(state);
             var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);
+            var stateString = JsonConvert.SerializeObject(state);
             var url = urlBuilder.Build(model.ApiAbsUrl, issuerConfig, state: stateString, codeChallenge: codeChallenge);
             var response = Result.Response(new LoginRedirectLinkResponseModel {ExternalAuthenticationUrl = url})
                 .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, State.Protect(stateString)) {HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)});
@@ -123,6 +122,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 .WithCookie(new OctoCookie(UserAuthConstants.OctopusStateCookieName, State.Protect(stateString)) {HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)})
                 .WithCookie(new OctoCookie(UserAuthConstants.OctopusNonceCookieName, Nonce.Protect(nonce)) {HttpOnly = true, Secure = state.UsingSecureConnection, Expires = DateTimeOffset.UtcNow.AddMinutes(20)});
             return response;
+        }
+
+        async Task InsertPkceBlob(PkceBlob blob, string requestId)
+        {
+            await mediator.Do(
+                new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, requestId, JsonSerializer.SerializeToUtf8Bytes(blob)),
+                new CancellationToken());
         }
     }
 }

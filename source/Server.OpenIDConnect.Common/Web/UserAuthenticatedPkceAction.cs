@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -81,16 +80,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task<IOctoResponseProvider> Handle(string code, string state, IOctoRequest request)
         {
-            var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithRequestId>(state)!;
-
-            var blobs = await GetAllPkceBlobsBelongingToExtension();
-            var blobFromOriginalRequest = blobs.Single(b => b.RequestId == stateFromRequest.RequestId);
-            await RemoveBlob(blobFromOriginalRequest);
-            await RemoveExpiredBlobs(blobs);
-
             var host = request.Headers.ContainsKey("Host") ? request.Headers["Host"].Single() : request.Host;
             var redirectUri = $"{request.Scheme}://{host}{configurationStore.RedirectUri}";
-            var response = await RequestAuthToken(code, redirectUri, blobFromOriginalRequest.CodeVerifier);
+            var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithRequestId>(state)!;
+            var codeVerifier = await GetCodeVerifier(stateFromRequest.RequestId);
+            var response = await RequestAuthToken(code, redirectUri, codeVerifier);
 
             var authServerResponseHandler = new AuthServerResponseHandler<TAuthTokenHandler>(
                 authTokenHandler,
@@ -105,12 +99,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
                 authServerResponseHandler.ValidateState(request, state);
 
-                var authenticationCandidate = authServerResponseHandler.GetUserDetails(principalContainer);
-
+                var authenticationCandidate = authServerResponseHandler.MapPrincipalToUserResource(principalContainer);
                 var action = authServerResponseHandler.CheckIfAuthenticationAttemptIsBanned(authenticationCandidate.Username!, request.Host);
 
-                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
-                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation(), cts.Token);
+                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation());
                 if (userResult is ISuccessResult<IUser> successResult)
                 {
                     return authServerResponseHandler.Success(request, successResult, authenticationCandidate.Username!, stateFromRequest);
@@ -133,7 +125,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
             var formValues = new Dictionary<string, string>
             {
-                ["grant_type"] = "authorization_code",
+                ["grant_type"] = OpenIDConnectConfiguration.AuthCodeGrantType,
                 ["code"] = code,
                 ["redirect_uri"] = redirectUri,
                 ["client_id"] = configurationStore.GetClientId()!,
@@ -144,6 +136,16 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
             var body = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Dictionary<string, string?>>(body)!;
+        }
+
+        async Task<string> GetCodeVerifier(Guid requestId)
+        {
+            var blobs = await GetAllPkceBlobsBelongingToExtension();
+            var blobFromOriginalRequest = blobs.Single(b => b.RequestId == requestId);
+            await RemoveBlob(blobFromOriginalRequest);
+            await RemoveAnyExpiredBlobs(blobs);
+
+            return blobFromOriginalRequest.CodeVerifier;
         }
 
         async Task<List<PkceBlob>> GetAllPkceBlobsBelongingToExtension()
@@ -164,7 +166,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return pkceBlobs;
         }
 
-        async Task RemoveExpiredBlobs(IEnumerable<PkceBlob> blobs)
+        async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs)
         {
             foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalSeconds > 30))
             {

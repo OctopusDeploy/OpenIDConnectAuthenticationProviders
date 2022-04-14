@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,21 +72,18 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             try
             {
                 var principalContainer =  await authServerResponseHandler.GetDetailsFromRequestEnsuringNoErrors(request.Form.ToDictionary(pair => pair.Key, pair => (string?)pair.Value));
-                var stateStringFromRequest = request.Form.ContainsKey("state") ? request.Form["state"] : string.Empty;
 
+                var stateStringFromRequest = request.Form.ContainsKey("state") ? request.Form["state"] : string.Empty;
                 authServerResponseHandler.ValidateState(request, stateStringFromRequest);
                 authServerResponseHandler.ValidateNonce(request, principalContainer);
 
-                var authenticationCandidate = authServerResponseHandler.GetUserDetails(principalContainer);
-                var username = authenticationCandidate.Username!;
+                var authenticationCandidate = authServerResponseHandler.MapPrincipalToUserResource(principalContainer);
+                var action = authServerResponseHandler.CheckIfAuthenticationAttemptIsBanned(authenticationCandidate.Username!, request.Host);
 
-                var action = authServerResponseHandler.CheckIfAuthenticationAttemptIsBanned(username, request.Host);
-                var stateFromRequest = JsonConvert.DeserializeObject<LoginState>(stateStringFromRequest)!;
-
-                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
-                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation(), cts.Token);
+                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation());
                 if (userResult is ISuccessResult<IUser> successResult)
                 {
+                    var stateFromRequest = JsonConvert.DeserializeObject<LoginState>(stateStringFromRequest)!;
                     return authServerResponseHandler.Success(request, successResult, authenticationCandidate.Username!, stateFromRequest);
                 }
 

@@ -8,6 +8,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 {
     public interface IUserService
     {
-        IResultFromExtension<IUser> GetOrCreateUser(UserResource userResource, string[] groups, string providerName, IIdentityCreator identityCreator, bool allowAutoUserCreation, CancellationToken cancellationToken);
+        IResultFromExtension<IUser> GetOrCreateUser(UserResource userResource, string[] groups, string providerName, IIdentityCreator identityCreator, bool allowAutoUserCreation);
     }
 }

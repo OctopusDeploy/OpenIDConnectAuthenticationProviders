@@ -1,4 +1,5 @@
-﻿using Octopus.Data.Model;
+﻿using System;
+using Octopus.Data.Model;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration
@@ -10,6 +11,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
         public const string DefaultResponseMode = "form_post";
         public const string DefaultScope = "openid%20profile%20email";
         public const string DefaultNameClaimType = "name";
+        public const string AuthCodeGrantType = "authorization_code";
 
         protected OpenIDConnectConfiguration(string id) : base(id)
         {

@@ -5,7 +5,6 @@ using Octopus.Data;
 using Octopus.Data.Model.User;
 using Octopus.Data.Storage.User;
 using Octopus.Server.Extensibility.Authentication.HostServices;
-using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identities;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Infrastructure;
 using Octopus.Server.Extensibility.Authentication.Resources.Identities;
@@ -30,7 +29,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             string[] groups,
             string providerName,
             IIdentityCreator identityCreator,
-            bool allowAutoUserCreation)
+            bool allowAutoUserCreation,
+            CancellationToken cancellationToken)
         {
             var identityToMatch = NewIdentity(userResource, identityCreator);
 
@@ -39,7 +39,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 throw new Exception("There are multiple users with this identity. OpenID Connect identity providers do not support users with duplicate email addresses. Please remove any duplicate users, or make the email addresses unique.");
             var user = matchingUsers.SingleOrDefault();
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
             if (user != null)
             {
                 userStore.SetSecurityGroupIds(providerName, user.Id, groups, clock.GetUtcTime());
@@ -53,10 +52,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 identity = user.Identities.FirstOrDefault(x => x.IdentityProviderName == providerName && x.Claims[ClaimDescriptor.EmailClaimType].Value == userResource.EmailAddress);
                 if (identity != null)
                 {
-                    return ResultFromExtension<IUser>.Success(userStore.UpdateIdentity(user.Id, identityToMatch, cts.Token));
+                    return ResultFromExtension<IUser>.Success(userStore.UpdateIdentity(user.Id, identityToMatch, cancellationToken));
                 }
 
-                return ResultFromExtension<IUser>.Success(userStore.AddIdentity(user.Id, identityToMatch, cts.Token));
+                return ResultFromExtension<IUser>.Success(userStore.AddIdentity(user.Id, identityToMatch, cancellationToken));
             }
 
             if (!allowAutoUserCreation)
@@ -66,7 +65,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 userResource.Username ?? string.Empty,
                 userResource.DisplayName ?? string.Empty,
                 userResource.EmailAddress ?? string.Empty,
-                cts.Token,
+                cancellationToken,
                 new ProviderUserGroups { IdentityProviderName = providerName, GroupIds = groups },
                 new[] { identityToMatch });
             if (userResult is IFailureResult failureResult)

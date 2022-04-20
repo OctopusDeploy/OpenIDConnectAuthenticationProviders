@@ -83,7 +83,9 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             var host = request.Headers.ContainsKey("Host") ? request.Headers["Host"].Single() : request.Host;
             var redirectUri = $"{request.Scheme}://{host}{configurationStore.RedirectUri}";
             var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithRequestId>(state)!;
-            var codeVerifier = await GetCodeVerifier(stateFromRequest.RequestId);
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            var codeVerifier = await GetCodeVerifier(stateFromRequest.RequestId, cts.Token);
             var response = await RequestAuthToken(code, redirectUri, codeVerifier);
 
             var authServerResponseHandler = new AuthServerResponseHandler<TAuthTokenHandler>(
@@ -102,7 +104,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var authenticationCandidate = authServerResponseHandler.MapPrincipalToUserResource(principalContainer);
                 var action = authServerResponseHandler.CheckIfAuthenticationAttemptIsBanned(authenticationCandidate.Username!, request.Host);
 
-                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation());
+                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation(), cts.Token);
                 if (userResult is ISuccessResult<IUser> successResult)
                 {
                     return authServerResponseHandler.Success(request, successResult, authenticationCandidate.Username!, stateFromRequest);
@@ -138,19 +140,19 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return JsonConvert.DeserializeObject<Dictionary<string, string?>>(body)!;
         }
 
-        async Task<string> GetCodeVerifier(Guid requestId)
+        async Task<string> GetCodeVerifier(Guid requestId, CancellationToken cancellationToken)
         {
-            var blobs = await GetAllPkceBlobsBelongingToExtension();
+            var blobs = await GetAllPkceBlobsBelongingToExtension(cancellationToken);
             var blobFromOriginalRequest = blobs.Single(b => b.RequestId == requestId);
-            await RemoveBlob(blobFromOriginalRequest);
-            await RemoveAnyExpiredBlobs(blobs);
+            await RemoveBlob(blobFromOriginalRequest, cancellationToken);
+            await RemoveAnyExpiredBlobs(blobs, cancellationToken);
 
             return blobFromOriginalRequest.CodeVerifier;
         }
 
-        async Task<List<PkceBlob>> GetAllPkceBlobsBelongingToExtension()
+        async Task<List<PkceBlob>> GetAllPkceBlobsBelongingToExtension(CancellationToken cancellationToken)
         {
-            var allBlobsBelongingToExtension = await mediator.Request(new GetAllBlobsRequest(configurationStore.ConfigurationSettingsName), new CancellationToken());
+            var allBlobsBelongingToExtension = await mediator.Request(new GetAllBlobsRequest(configurationStore.ConfigurationSettingsName), cancellationToken);
             var pkceBlobs = new List<PkceBlob>();
             foreach (var blob in allBlobsBelongingToExtension.Blobs)
             {
@@ -166,17 +168,17 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return pkceBlobs;
         }
 
-        async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs)
+        async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs, CancellationToken cancellationToken)
         {
             foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalSeconds > 30))
             {
-                await RemoveBlob(blob);
+                await RemoveBlob(blob, cancellationToken);
             }
         }
 
-        async Task RemoveBlob(PkceBlob blob)
+        async Task RemoveBlob(PkceBlob blob, CancellationToken cancellationToken)
         {
-            await mediator.Do(new DeleteBlobCommand(configurationStore.ConfigurationSettingsName, blob.RequestId.ToString()), new CancellationToken());
+            await mediator.Do(new DeleteBlobCommand(configurationStore.ConfigurationSettingsName, blob.RequestId.ToString()), cancellationToken);
         }
     }
 }

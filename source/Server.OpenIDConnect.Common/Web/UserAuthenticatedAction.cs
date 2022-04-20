@@ -80,7 +80,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var authenticationCandidate = authServerResponseHandler.MapPrincipalToUserResource(principalContainer);
                 var action = authServerResponseHandler.CheckIfAuthenticationAttemptIsBanned(authenticationCandidate.Username!, request.Host);
 
-                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation());
+                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+                var userResult = userService.GetOrCreateUser(authenticationCandidate, principalContainer.ExternalGroupIds, ProviderName, identityCreator, configurationStore.GetAllowAutoUserCreation(), cts.Token);
                 if (userResult is ISuccessResult<IUser> successResult)
                 {
                     var stateFromRequest = JsonConvert.DeserializeObject<LoginState>(stateStringFromRequest)!;

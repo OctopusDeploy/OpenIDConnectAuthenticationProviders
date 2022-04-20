@@ -100,7 +100,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         async Task<IOctoResponseProvider> BuildAuthorizationCodePkceResponse(LoginRedirectLinkRequestModel model, LoginStateWithRequestId state, IssuerConfiguration issuerConfig)
         {
             var codeVerifier = Pkce.GenerateCodeVerifier();
-            await InsertPkceBlob(new PkceBlob(state.RequestId, codeVerifier, DateTimeOffset.UtcNow), state.RequestId.ToString());
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            await InsertPkceBlob(new PkceBlob(state.RequestId, codeVerifier, DateTimeOffset.UtcNow), state.RequestId.ToString(), cts.Token);
 
             var codeChallenge = Pkce.GenerateCodeChallenge(codeVerifier);
             var stateString = JsonConvert.SerializeObject(state);
@@ -124,11 +125,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return response;
         }
 
-        async Task InsertPkceBlob(PkceBlob blob, string requestId)
+        async Task InsertPkceBlob(PkceBlob blob, string requestId, CancellationToken cancellationToken)
         {
             await mediator.Do(
                 new PutBlobCommand(ConfigurationStore.ConfigurationSettingsName, requestId, JsonSerializer.SerializeToUtf8Bytes(blob)),
-                new CancellationToken());
+                cancellationToken);
         }
     }
 }

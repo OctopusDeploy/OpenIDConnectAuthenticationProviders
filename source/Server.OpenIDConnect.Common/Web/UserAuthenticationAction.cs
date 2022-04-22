@@ -79,7 +79,8 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
                 var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
 
-                var response = ConfigurationStore.HasClientSecret
+                // TODO: Remove the explicit check for OctopusID once OctopusID supports auth code flow
+                var response = ConfigurationStore.HasClientSecret && ConfigurationStore.ConfigurationSettingsName != "OctopusID"
                     ? await BuildAuthorizationCodePkceResponse(model, new LoginStateWithRequestId(state.RedirectAfterLoginTo, state.UsingSecureConnection, Guid.NewGuid()), issuerConfig)
                     : BuildHybridResponse(model, state, issuerConfig);
 

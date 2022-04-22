@@ -16,7 +16,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             this.urlEncoder = urlEncoder;
         }
 
-        protected virtual string ResponseType => ConfigurationStore.HasClientSecret ? OpenIDConnectConfiguration.AuthCodeResponseType : OpenIDConnectConfiguration.HybridResponseType;
+        // TODO: Remove the explicit check for OctopusID once OctopusID supports auth code flow
+        protected virtual string ResponseType => ConfigurationStore.HasClientSecret && ConfigurationStore.ConfigurationSettingsName != "OctopusID"
+            ? OpenIDConnectConfiguration.AuthCodeResponseType
+            : OpenIDConnectConfiguration.HybridResponseType;
         protected virtual string ResponseMode => OpenIDConnectConfiguration.DefaultResponseMode;
 
         public virtual string Build(string requestDirectoryPath, IssuerConfiguration issuerConfiguration, string? nonce = null, string? state = null, string? codeChallenge = null)

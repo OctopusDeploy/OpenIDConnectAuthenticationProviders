@@ -80,10 +80,10 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task<IOctoResponseProvider> Handle(string code, string state, IOctoRequest request)
         {
+            var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithRequestId>(state)!;
             var redirectUri = $"{request.Scheme}://{request.Host}{configurationStore.RedirectUri}";
             var headersHost = request.Headers["Host"].Single();
-            return UserAuthenticatedValidator.BadRequest(log, $"redirectUri: {redirectUri}, headers host: {headersHost}");
-            var stateFromRequest = JsonConvert.DeserializeObject<LoginStateWithRequestId>(state)!;
+            return UserAuthenticatedValidator.BadRequest(log, $"redirectUri: {redirectUri}, headers host: {headersHost}, usingSecuredConnection: {stateFromRequest.UsingSecureConnection}, isHttps: {request.IsHttps}");
 
             using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
             var codeVerifier = await GetCodeVerifier(stateFromRequest.RequestId, cts.Token);

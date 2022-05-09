@@ -127,13 +127,15 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             using var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, issuerConfig.TokenEndpoint);
 
+            var clientSecret = configurationStore.GetClientSecret()!.Value;
+            log.WithSensitiveValue(clientSecret);
             var formValues = new Dictionary<string, string>
             {
                 ["grant_type"] = OpenIDConnectConfiguration.AuthCodeGrantType,
                 ["code"] = code,
                 ["redirect_uri"] = redirectUri,
                 ["client_id"] = configurationStore.GetClientId()!,
-                ["client_secret"] = configurationStore.GetClientSecret()!.Value,
+                ["client_secret"] = clientSecret,
                 ["code_verifier"] = codeVerifier
             };
             request.Content = new FormUrlEncodedContent(formValues!);

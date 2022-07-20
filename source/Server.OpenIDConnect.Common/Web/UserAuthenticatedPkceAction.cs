@@ -173,7 +173,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs, CancellationToken cancellationToken)
         {
-            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5))
+            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalHours > 1))
             {
                 await RemoveBlob(blob, cancellationToken);
             }

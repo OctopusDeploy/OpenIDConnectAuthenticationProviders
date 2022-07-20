@@ -146,6 +146,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         {
             var blobs = await GetAllPkceBlobsBelongingToExtension(cancellationToken);
             var blobFromOriginalRequest = blobs.Single(b => b.RequestId == requestId);
+            blobs.Remove(blobFromOriginalRequest);
             await RemoveBlob(blobFromOriginalRequest, cancellationToken);
             await RemoveAnyExpiredBlobs(blobs, cancellationToken);
 
@@ -172,7 +173,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs, CancellationToken cancellationToken)
         {
-            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalSeconds > 30))
+            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5))
             {
                 await RemoveBlob(blob, cancellationToken);
             }

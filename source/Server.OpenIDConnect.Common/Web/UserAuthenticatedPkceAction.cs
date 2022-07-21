@@ -152,10 +152,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
                 throw new TimeoutException("Your session has expired. Please try signing in again.");
             }
 
-            blobs.Remove(blobFromOriginalRequest);
-            await RemoveBlob(blobFromOriginalRequest, cancellationToken);
-            await RemoveAnyExpiredBlobs(blobs, cancellationToken);
-
+            await DeleteOldBlobs(blobs, requestId, cancellationToken);
             return blobFromOriginalRequest.CodeVerifier;
         }
 
@@ -177,15 +174,17 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return pkceBlobs;
         }
 
-        async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs, CancellationToken cancellationToken)
+        async Task DeleteOldBlobs(IEnumerable<PkceBlob> blobs, Guid requestId, CancellationToken cancellationToken)
         {
-            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5))
+            bool BlobIsFromOriginalRequestOrIsExpired(PkceBlob blob) => blob.RequestId == requestId || DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5;
+
+            foreach (var blob in blobs.Where(BlobIsFromOriginalRequestOrIsExpired))
             {
-                await RemoveBlob(blob, cancellationToken);
+                await DeleteBlob(blob, cancellationToken);
             }
         }
 
-        async Task RemoveBlob(PkceBlob blob, CancellationToken cancellationToken)
+        async Task DeleteBlob(PkceBlob blob, CancellationToken cancellationToken)
         {
             await mediator.Do(new DeleteBlobCommand(configurationStore.ConfigurationSettingsName, blob.RequestId.ToString()), cancellationToken);
         }

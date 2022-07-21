@@ -145,7 +145,13 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         async Task<string> GetCodeVerifier(Guid requestId, CancellationToken cancellationToken)
         {
             var blobs = await GetAllPkceBlobsBelongingToExtension(cancellationToken);
-            var blobFromOriginalRequest = blobs.Single(b => b.RequestId == requestId);
+            var blobFromOriginalRequest = blobs.SingleOrDefault(b => b.RequestId == requestId);
+
+            if (blobFromOriginalRequest == null)
+            {
+                throw new TimeoutException("Your session has expired. Please try signing in again.");
+            }
+
             blobs.Remove(blobFromOriginalRequest);
             await RemoveBlob(blobFromOriginalRequest, cancellationToken);
             await RemoveAnyExpiredBlobs(blobs, cancellationToken);
@@ -173,7 +179,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task RemoveAnyExpiredBlobs(IEnumerable<PkceBlob> blobs, CancellationToken cancellationToken)
         {
-            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalHours > 1))
+            foreach (var blob in blobs.Where(blob => DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5))
             {
                 await RemoveBlob(blob, cancellationToken);
             }

@@ -145,15 +145,15 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
         async Task<string> GetCodeVerifier(Guid requestId, CancellationToken cancellationToken)
         {
             var blobs = await GetAllPkceBlobsBelongingToExtension(cancellationToken);
-            var blobFromOriginalRequest = blobs.SingleOrDefault(b => b.RequestId == requestId);
+            var currentBlob = blobs.SingleOrDefault(b => b.RequestId == requestId);
 
-            if (blobFromOriginalRequest == null)
+            if (currentBlob == null)
             {
                 throw new TimeoutException("Your session has expired. Please try signing in again.");
             }
 
-            await DeleteOldBlobs(blobs, requestId, cancellationToken);
-            return blobFromOriginalRequest.CodeVerifier;
+            await DeleteCurrentAndExpiredBlobs(blobs, requestId, cancellationToken);
+            return currentBlob.CodeVerifier;
         }
 
         async Task<List<PkceBlob>> GetAllPkceBlobsBelongingToExtension(CancellationToken cancellationToken)
@@ -174,11 +174,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             return pkceBlobs;
         }
 
-        async Task DeleteOldBlobs(IEnumerable<PkceBlob> blobs, Guid requestId, CancellationToken cancellationToken)
+        async Task DeleteCurrentAndExpiredBlobs(IEnumerable<PkceBlob> blobs, Guid requestId, CancellationToken cancellationToken)
         {
-            bool BlobIsFromOriginalRequestOrIsExpired(PkceBlob blob) => blob.RequestId == requestId || DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5;
+            bool BlobIsCurrentOrIsExpired(PkceBlob blob) => blob.RequestId == requestId || DateTimeOffset.UtcNow.Subtract(blob.TimeStamp).TotalMinutes > 5;
 
-            foreach (var blob in blobs.Where(BlobIsFromOriginalRequestOrIsExpired))
+            foreach (var blob in blobs.Where(BlobIsCurrentOrIsExpired))
             {
                 await DeleteBlob(blob, cancellationToken);
             }

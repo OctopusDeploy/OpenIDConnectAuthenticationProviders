@@ -16,7 +16,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
             if (configurations.ContainsKey(issuer))
                 return configurations[issuer];
 
-            IssuerConfiguration configuration;
+            IssuerConfiguration? configuration;
 
             using (var client = new HttpClient())
             {

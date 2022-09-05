@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Octopus.Server.Extensibility.Authentication.Okta</RootNamespace>
     <AssemblyName>Octopus.Server.Extensibility.Authentication.Okta</AssemblyName>
     <Description>Octopus Deploy: Extensibility.Authentication.Okta</Description>

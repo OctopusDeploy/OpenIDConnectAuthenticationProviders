@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -14,6 +15,11 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certi
         public KeyDetails[] Parse(string content)
         {
             var keyData = JsonConvert.DeserializeObject<IssuerKeys>(content);
+
+            if (keyData == null)
+            {
+                return Array.Empty<KeyDetails>();
+            }
 
             return keyData.Keys
                 .Where(IsRsaKey)

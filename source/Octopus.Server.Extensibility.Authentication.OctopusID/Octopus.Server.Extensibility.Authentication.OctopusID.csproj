@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server.OpenIDConnect.Common\Server.OpenIDConnect.Common.csproj" />
+    <ProjectReference Include="..\Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common\Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.csproj" />
   </ItemGroup>
 
 </Project>

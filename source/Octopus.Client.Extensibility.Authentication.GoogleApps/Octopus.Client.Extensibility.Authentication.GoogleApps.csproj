@@ -16,12 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client.OpenIDConnect\Client.OpenIDConnect.csproj" />
+    <ProjectReference Include="..\Octopus.Client.Extensibility.Authentication.OpenIDConnect\Octopus.Client.Extensibility.Authentication.OpenIDConnect.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath=""/>
-    <None Include="..\..\build\icon.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\build\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

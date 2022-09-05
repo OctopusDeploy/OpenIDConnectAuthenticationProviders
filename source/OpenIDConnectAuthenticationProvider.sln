@@ -9,29 +9,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Solution Items\VersionInfo.cs = Solution Items\VersionInfo.cs
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.OpenIDConnect.Common", "Server.OpenIDConnect.Common\Server.OpenIDConnect.Common.csproj", "{90829768-9B06-475D-AC73-C9C6E0F20ACB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common", "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common\Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.csproj", "{90829768-9B06-475D-AC73-C9C6E0F20ACB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.AzureAD", "Server.AzureAD\Server.AzureAD.csproj", "{8CBCE54C-D501-4ED8-A716-DE64AE5198DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Server.Extensibility.Authentication.AzureAD", "Octopus.Server.Extensibility.Authentication.AzureAD\Octopus.Server.Extensibility.Authentication.AzureAD.csproj", "{8CBCE54C-D501-4ED8-A716-DE64AE5198DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.GoogleApps", "Server.GoogleApps\Server.GoogleApps.csproj", "{6796E715-F1FA-445D-AF1F-F6C9023A8D07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Server.Extensibility.Authentication.GoogleApps", "Octopus.Server.Extensibility.Authentication.GoogleApps\Octopus.Server.Extensibility.Authentication.GoogleApps.csproj", "{6796E715-F1FA-445D-AF1F-F6C9023A8D07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Okta", "Server.Okta\Server.Okta.csproj", "{3C7C3079-DF0E-484F-8556-10B18127450B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Server.Extensibility.Authentication.Okta", "Octopus.Server.Extensibility.Authentication.Okta\Octopus.Server.Extensibility.Authentication.Okta.csproj", "{3C7C3079-DF0E-484F-8556-10B18127450B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C354DA8E-D532-4DAE-8D61-E4F50A0139C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{00680371-A6E1-435F-9966-2450C2723E91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tests", "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tests\Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tests.csproj", "{00680371-A6E1-435F-9966-2450C2723E91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.OpenIDConnect", "Client.OpenIDConnect\Client.OpenIDConnect.csproj", "{2B189A86-73DB-495F-B2B7-104672DB1580}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Client.Extensibility.Authentication.OpenIDConnect", "Octopus.Client.Extensibility.Authentication.OpenIDConnect\Octopus.Client.Extensibility.Authentication.OpenIDConnect.csproj", "{2B189A86-73DB-495F-B2B7-104672DB1580}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.AzureAD", "Client.AzureAD\Client.AzureAD.csproj", "{A0DD0DD3-B040-45D7-A4E3-C4601C63D8B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Client.Extensibility.Authentication.AzureAD", "Octopus.Client.Extensibility.Authentication.AzureAD\Octopus.Client.Extensibility.Authentication.AzureAD.csproj", "{A0DD0DD3-B040-45D7-A4E3-C4601C63D8B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.GoogleApps", "Client.GoogleApps\Client.GoogleApps.csproj", "{30B0B7CB-8DF3-4DA0-9956-83CCCAD8694F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Client.Extensibility.Authentication.GoogleApps", "Octopus.Client.Extensibility.Authentication.GoogleApps\Octopus.Client.Extensibility.Authentication.GoogleApps.csproj", "{30B0B7CB-8DF3-4DA0-9956-83CCCAD8694F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Okta", "Client.Okta\Client.Okta.csproj", "{580B0996-346B-44F5-8411-C9F8EA04869D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octopus.Client.Extensibility.Authentication.Okta", "Octopus.Client.Extensibility.Authentication.Okta\Octopus.Client.Extensibility.Authentication.Okta.csproj", "{580B0996-346B-44F5-8411-C9F8EA04869D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.OctopusID", "Server.OctopusID\Server.OctopusID.csproj", "{F0421EFD-B724-4A4F-BC0D-9394B4EE520E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octopus.Server.Extensibility.Authentication.OctopusID", "Octopus.Server.Extensibility.Authentication.OctopusID\Octopus.Server.Extensibility.Authentication.OctopusID.csproj", "{F0421EFD-B724-4A4F-BC0D-9394B4EE520E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.OctopusID", "Client.OctopusID\Client.OctopusID.csproj", "{4186AB53-9506-4932-AF33-A5D013DA590C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octopus.Client.Extensibility.Authentication.OctopusID", "Octopus.Client.Extensibility.Authentication.OctopusID\Octopus.Client.Extensibility.Authentication.OctopusID.csproj", "{4186AB53-9506-4932-AF33-A5D013DA590C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{C9D46DEE-82B4-48B1-968D-5E2B64B96B18}"
 EndProject

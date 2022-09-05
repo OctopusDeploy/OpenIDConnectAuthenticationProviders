@@ -71,7 +71,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetTest(_ => _
-                .SetProjectFile(SourceDirectory / "Tests" / "Tests.csproj")
+                .SetProjectFile(SourceDirectory / "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tests" / "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Tests.csproj")
                 .SetConfiguration(Configuration)
                 .EnableNoBuild());
         });

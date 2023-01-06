@@ -5,7 +5,7 @@ namespace Octopus.Server.Extensibility.Authentication.OctopusID
 {
     class OctopusIdConfigDiscoverer : IOctopusIdentityProviderConfigDiscoverer
     {
-        public Task<IssuerConfiguration> GetConfigurationAsync(string issuer)
+        public Task<IssuerConfiguration> GetConfiguration(string issuer)
         {
             return Task.FromResult(new IssuerConfiguration
             {

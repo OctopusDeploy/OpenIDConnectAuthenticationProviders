@@ -123,7 +123,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         async Task<IDictionary<string, string?>> RequestAuthToken(string code, string redirectUri, string codeVerifier)
         {
-            var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(configurationStore.GetIssuer() ?? string.Empty);
+            var issuerConfig = await identityProviderConfigDiscoverer.GetConfiguration(configurationStore.GetIssuer() ?? string.Empty);
             using var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, issuerConfig.TokenEndpoint);
 

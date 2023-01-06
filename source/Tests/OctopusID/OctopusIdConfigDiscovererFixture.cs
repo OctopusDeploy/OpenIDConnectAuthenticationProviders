@@ -14,7 +14,7 @@ namespace Tests.OctopusID
         {
             var sut = new OctopusIdConfigDiscoverer();
 
-            var result = await sut.GetConfigurationAsync(inputIssuer);
+            var result = await sut.GetConfiguration(inputIssuer);
 
             Assert.AreEqual(expectedOutputIssuer, result.Issuer);
             Assert.AreEqual(expectedAuthorizationEndpoint, result.AuthorizationEndpoint);

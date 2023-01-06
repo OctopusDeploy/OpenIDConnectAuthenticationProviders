@@ -41,7 +41,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Token
             ClaimsPrincipal? principal = null;
 
             var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
-            var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
+            var issuerConfig = await identityProviderConfigDiscoverer.GetConfiguration(issuer);
 
             var validationParameters = new TokenValidationParameters
             {

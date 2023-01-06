@@ -77,7 +77,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
             try
             {
                 var issuer = ConfigurationStore.GetIssuer() ?? string.Empty;
-                var issuerConfig = await identityProviderConfigDiscoverer.GetConfigurationAsync(issuer);
+                var issuerConfig = await identityProviderConfigDiscoverer.GetConfiguration(issuer);
 
                 // TODO: Remove the explicit check for OctopusID once OctopusID supports auth code flow
                 var response = ConfigurationStore.HasClientSecret && ConfigurationStore.ConfigurationSettingsName != "OctopusID"

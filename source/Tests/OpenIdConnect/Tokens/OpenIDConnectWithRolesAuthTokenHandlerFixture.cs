@@ -50,7 +50,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetClientId().Returns(DefaultClientId);
             configurationStore.GetRoleClaimType().Returns("roles");
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)
@@ -81,7 +81,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetClientId().Returns(DefaultClientId);
             configurationStore.GetRoleClaimType().Returns("groups");
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)
@@ -112,7 +112,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetClientId().Returns(DefaultClientId);
             configurationStore.GetRoleClaimType().Returns("roles");
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)
@@ -145,7 +145,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetClientId().Returns(DefaultClientId);
             configurationStore.GetRoleClaimType().Returns("groups");
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)

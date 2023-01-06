@@ -4,6 +4,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
 {
     public interface IIdentityProviderConfigDiscoverer
     {
-        Task<IssuerConfiguration> GetConfigurationAsync(string issuer);
+        Task<IssuerConfiguration> GetConfiguration(string issuer);
     }
 }

@@ -11,7 +11,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issue
     {
         readonly Dictionary<string, IssuerConfiguration> configurations = new Dictionary<string, IssuerConfiguration>();
 
-        public async Task<IssuerConfiguration> GetConfigurationAsync(string issuer)
+        public async Task<IssuerConfiguration> GetConfiguration(string issuer)
         {
             if (configurations.ContainsKey(issuer))
                 return configurations[issuer];

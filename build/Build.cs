@@ -1,7 +1,6 @@
 using System;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
@@ -9,8 +8,8 @@ using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using Nuke.Common.Tools.OctoVersion;
+using Serilog;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
@@ -19,14 +18,19 @@ class Build : NukeBuild
     ///   - JetBrains Rider            https://nuke.build/rider
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
-
-    public static int Main () => Execute<Build>(x => x.Default);
-
     [Parameter("Configuration to build - 'Release' (server)")]
     readonly Configuration Configuration = Configuration.Release;
-
+    
     [Solution] readonly Solution Solution;
-    [OctoVersion] readonly OctoVersionInfo OctoVersionInfo;
+
+    [Parameter("Whether to auto-detect the branch name - this is okay for a local build, but should not be used under CI.")] readonly bool AutoDetectBranch = IsLocalBuild;
+
+    [OctoVersion(BranchMember = nameof(BranchName), AutoDetectBranchMember = nameof(AutoDetectBranch), Framework = "net6.0")]
+    public OctoVersionInfo OctoVersionInfo;
+
+    const string CiBranchNameEnvVariable = "OCTOVERSION_CurrentBranch";
+    [Parameter("Branch name for OctoVersion to use to calculate the version number. Can be set via the environment variable " + CiBranchNameEnvVariable + ".", Name = CiBranchNameEnvVariable)]
+    string BranchName { get; set; }
 
     AbsolutePath SourceDirectory => RootDirectory / "source";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -53,7 +57,7 @@ class Build : NukeBuild
         .DependsOn(Restore)
         .Executes(() =>
         {
-            Logger.Info("Building Octopus Server OpenID Connect Authentication Provider v{0}", OctoVersionInfo.FullSemVer);
+            Log.Logger.Information("Building Octopus Server OpenID Connect Authentication Provider v{0}", OctoVersionInfo.FullSemVer);
             
             // This is done to pass the data to github actions
             Console.Out.WriteLine($"::set-output name=semver::{OctoVersionInfo.FullSemVer}");
@@ -81,17 +85,17 @@ class Build : NukeBuild
         .Produces(ArtifactsDirectory / "*.nupkg")
         .Executes(() =>
         {
-            Logger.Info("Packing Octopus Server OpenID Connect Authentication Provider v{0}", OctoVersionInfo.FullSemVer);
+            Log.Logger.Information("Packing Octopus Server OpenID Connect Authentication Provider v{0}", OctoVersionInfo.FullSemVer);
             
             CopyFileToDirectory(BuildProjectDirectory / "Octopus.Server.Extensibility.Authentication.OpenIDConnect.nuspec", PublishDirectory);
             
             CopyFileToDirectory(RootDirectory / "LICENSE.txt", PublishDirectory);
             CopyFileToDirectory(BuildProjectDirectory / "icon.png", PublishDirectory);
-            CopyFileToDirectory(SourceDirectory / "Server.OpenIDConnect.Common" / "bin" / Configuration / "net5.0" / "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.dll" , PublishDirectory);
-            CopyFileToDirectory(SourceDirectory / "Server.AzureAD" / "bin" / Configuration / "net5.0" / "Octopus.Server.Extensibility.Authentication.AzureAD.dll" , PublishDirectory);
-            CopyFileToDirectory(SourceDirectory / "Server.GoogleApps" / "bin" / Configuration / "net5.0" / "Octopus.Server.Extensibility.Authentication.GoogleApps.dll", PublishDirectory);
-            CopyFileToDirectory(SourceDirectory / "Server.Okta" / "bin" / Configuration / "net5.0" / "Octopus.Server.Extensibility.Authentication.Okta.dll", PublishDirectory);
-            CopyFileToDirectory(SourceDirectory / "Server.OctopusID" / "bin" / Configuration / "net5.0" / "Octopus.Server.Extensibility.Authentication.OctopusID.dll", PublishDirectory);
+            CopyFileToDirectory(SourceDirectory / "Server.OpenIDConnect.Common" / "bin" / Configuration / "net6.0" / "Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.dll" , PublishDirectory);
+            CopyFileToDirectory(SourceDirectory / "Server.AzureAD" / "bin" / Configuration / "net6.0" / "Octopus.Server.Extensibility.Authentication.AzureAD.dll" , PublishDirectory);
+            CopyFileToDirectory(SourceDirectory / "Server.GoogleApps" / "bin" / Configuration / "net6.0" / "Octopus.Server.Extensibility.Authentication.GoogleApps.dll", PublishDirectory);
+            CopyFileToDirectory(SourceDirectory / "Server.Okta" / "bin" / Configuration / "net6.0" / "Octopus.Server.Extensibility.Authentication.Okta.dll", PublishDirectory);
+            CopyFileToDirectory(SourceDirectory / "Server.OctopusID" / "bin" / Configuration / "net6.0" / "Octopus.Server.Extensibility.Authentication.OctopusID.dll", PublishDirectory);
 
             DotNetPack(_ => _
                 .SetProject(SourceDirectory / "Server.OpenIDConnect.Common" / "Server.OpenIDConnect.Common.csproj") 
@@ -177,4 +181,6 @@ class Build : NukeBuild
         Target Default => _ => _
             .DependsOn(Pack)
             .DependsOn(CopyToLocalPackages);
+        
+        public static int Main () => Execute<Build>(x => x.Default);
 }

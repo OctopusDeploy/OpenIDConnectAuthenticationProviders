@@ -52,7 +52,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetIssuer().Returns(DefaultIssuer);
             configurationStore.GetClientId().Returns(DefaultClientId);
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)
@@ -94,7 +94,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetIssuer().Returns(DefaultIssuer);
             configurationStore.GetClientId().Returns(DefaultClientId);
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             // On first call to keyRetriever return invalid (stale) key
@@ -142,7 +142,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetIssuer().Returns(DefaultIssuer);
             configurationStore.GetClientId().Returns(DefaultClientId);
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             // set keyRetriever to always return invalid (stale) key
@@ -172,7 +172,7 @@ namespace Tests.OpenIdConnect.Tokens
             configurationStore.GetIssuer().Returns(DefaultIssuer);
             configurationStore.GetClientId().Returns(DefaultClientId);
 
-            identityProviderConfigDiscoverer.GetConfigurationAsync(DefaultIssuer)
+            identityProviderConfigDiscoverer.GetConfiguration(DefaultIssuer)
                 .Returns(Task.FromResult<IssuerConfiguration>(issuerConfig));
 
             keyRetriever.GetKeysAsync(issuerConfig, false)

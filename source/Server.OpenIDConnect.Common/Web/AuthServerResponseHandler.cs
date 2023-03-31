@@ -88,7 +88,7 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web
 
         public IOctoResponseProvider Success(IOctoRequest request, ISuccessResult<IUser> successResult, string username, LoginState state)
         {
-            loginTracker.RecordSucess(username, request.Host);
+            loginTracker.RecordSuccess(username, request.Host);
 
             UserAuthenticatedValidator.ValidateUserIsActive(successResult.Value.IsActive, username);
             UserAuthenticatedValidator.ValidateUserIsNotServiceAccount(successResult.Value.IsService, username);

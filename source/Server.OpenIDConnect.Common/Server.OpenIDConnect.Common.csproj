@@ -14,12 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.3" />
-    <PackageReference Include="Octopus.Diagnostics" Version="2.1.2" />
-    <PackageReference Include="Octopus.Server.Extensibility" Version="14.3.338" />
-    <PackageReference Include="Octopus.Server.Extensibility.Authentication" Version="11.1.126" />
-    <PackageReference Include="Octopus.Time" Version="1.1.5" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Octopus.Server.MessageContracts" Version="3.0.592" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Security.Claims">
@@ -30,4 +25,33 @@
     <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\build\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Octopus.Data">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Data.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.Extensibility">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Extensibility.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.Extensibility.Authentication">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Extensibility.Authentication.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.Extensibility.Authentication">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Autofac.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.Client">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Client.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.MessageContracts">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.MessageContracts.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.MessageContracts.Base">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.MessageContracts.Base.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Diagnostics">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Diagnostics.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Time">
+            <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Time.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

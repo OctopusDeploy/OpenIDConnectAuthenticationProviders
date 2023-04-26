@@ -24,10 +24,13 @@
     <EmbeddedResource Include="Web\Static\areas\users\azureAD_auth_provider.js" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Server.OpenIDConnect.Common\Server.OpenIDConnect.Common.csproj" />
-  </ItemGroup>
     <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>C:\Program Files\Octopus Deploy\Octopus\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Core">
+          <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Core.dll</HintPath>
+        </Reference>
         <Reference Include="Octopus.Data">
             <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Data.dll</HintPath>
         </Reference>
@@ -42,6 +45,9 @@
         </Reference>
         <Reference Include="Octopus.Server.Client">
             <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Client.dll</HintPath>
+        </Reference>
+        <Reference Include="Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common">
+          <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.dll</HintPath>
         </Reference>
         <Reference Include="Octopus.Server.MessageContracts">
             <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.MessageContracts.dll</HintPath>

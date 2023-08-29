@@ -20,13 +20,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
             this.log = log;
         }
 
-        public void SetClientKey(string? clientkey)
-        {
-            SetProperty(doc => doc.RoleClaimType = clientkey);
-        }
-
         public SensitiveString? GetClientKey() => GetProperty(doc => doc.ClientKey);
-        
+
         public void SetClientKey(SensitiveString? key) => SetProperty(doc =>
         {
             if (!string.IsNullOrEmpty(key?.Value))

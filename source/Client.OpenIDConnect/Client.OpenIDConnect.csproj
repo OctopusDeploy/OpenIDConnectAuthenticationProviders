@@ -16,12 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Octopus.Server.Client" Version="11.2.3319" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\build\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
-
+<ItemGroup>
+    <Reference Include="Octopus.Server.Client">
+        <HintPath>C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.Client.dll</HintPath>
+    </Reference>
+</ItemGroup>
 </Project>

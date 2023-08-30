@@ -1,4 +1,5 @@
-﻿using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identities;
+﻿using System;
+using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Identities;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Identities
 {
@@ -8,5 +9,6 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Identities
     }
 
     interface IAzureADIdentityCreator : IIdentityCreator
-    { }
+    {
+    }
 }

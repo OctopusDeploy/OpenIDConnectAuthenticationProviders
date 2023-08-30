@@ -1,4 +1,5 @@
-﻿using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
+﻿using System;
+using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Web;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web

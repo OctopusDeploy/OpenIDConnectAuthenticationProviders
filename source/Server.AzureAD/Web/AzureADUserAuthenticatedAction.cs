@@ -1,4 +1,5 @@
-﻿using Octopus.Diagnostics;
+﻿using System;
+using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Identities;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Infrastructure;
@@ -22,7 +23,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             ISleep sleep,
             IAzureADIdentityCreator identityCreator,
             IUrlEncoder encoder,
-            IUserService userService) :
+            IUserService userService,
+            IAuthenticationConfigurationStore authenticationConfigurationStore) :
             base(
                 log,
                 authTokenHandler,
@@ -33,7 +35,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
                 sleep,
                 identityCreator,
                 encoder,
-                userService)
+                userService,
+                authenticationConfigurationStore)
         {
         }
 

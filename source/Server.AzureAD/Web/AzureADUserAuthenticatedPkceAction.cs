@@ -1,4 +1,5 @@
-﻿using Octopus.Diagnostics;
+﻿using System;
+using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Identities;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Infrastructure;
@@ -26,8 +27,10 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             IUrlEncoder encoder,
             IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
             IMediator mediator,
-            IUserService service)
-            : base(log,
+            IUserService service,
+            IAuthenticationConfigurationStore authenticationConfigurationStore)
+            : base(
+                log,
                 authTokenHandler,
                 principalToUserResourceMapper,
                 configurationStore,
@@ -38,7 +41,8 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
                 encoder,
                 identityProviderConfigDiscoverer,
                 mediator,
-                service)
+                service,
+                authenticationConfigurationStore)
         {
         }
 

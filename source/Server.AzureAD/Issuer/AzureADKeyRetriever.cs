@@ -1,4 +1,5 @@
-﻿using Octopus.Diagnostics;
+﻿using System;
+using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates;
 

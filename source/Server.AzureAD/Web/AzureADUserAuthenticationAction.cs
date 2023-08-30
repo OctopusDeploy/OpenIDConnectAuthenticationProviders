@@ -1,4 +1,5 @@
-﻿using Octopus.Diagnostics;
+﻿using System;
+using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Issuer;
 using Octopus.Server.Extensibility.Authentication.HostServices;
@@ -18,7 +19,14 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             IAzureADAuthorizationEndpointUrlBuilder urlBuilder,
             IApiActionModelBinder modelBinder,
             IAuthenticationConfigurationStore authenticationConfigurationStore,
-            IMediator mediator) : base(log, configurationStore, identityProviderConfigDiscoverer, urlBuilder, modelBinder, authenticationConfigurationStore, mediator)
+            IMediator mediator) : base(
+            log,
+            configurationStore,
+            identityProviderConfigDiscoverer,
+            urlBuilder,
+            modelBinder,
+            authenticationConfigurationStore,
+            mediator)
         {
         }
     }

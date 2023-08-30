@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-using Octopus.Data.Model;
+﻿using System;
+using System.Collections.Generic;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
-using Octopus.Server.Extensibility.HostServices.Mapping;
 
 namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration
 {
-    public abstract class OpenIDConnectConfigurationSettings<TConfiguration, TResource, TDocumentStore> : ExtensionConfigurationSettings<TConfiguration, TResource, TDocumentStore>
+    public abstract class OpenIDConnectConfigurationSettingsProvider<TConfiguration, TResource, TDocumentStore> : ExtensionConfigurationSettingsProvider<TConfiguration, TResource, TDocumentStore>
         where TConfiguration : OpenIDConnectConfiguration, new()
         where TResource : ExtensionConfigurationResource
         where TDocumentStore : IOpenIDConnectConfigurationStore<TConfiguration>
     {
-        protected OpenIDConnectConfigurationSettings(TDocumentStore configurationDocumentStore) : base(configurationDocumentStore)
+        protected OpenIDConnectConfigurationSettingsProvider(TDocumentStore configurationDocumentStore) : base(configurationDocumentStore)
         {
         }
 
@@ -28,11 +27,6 @@ namespace Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Confi
             yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.RedirectUri", ConfigurationDocumentStore.RedirectUri, isEnabled, "RedirectUri");
             yield return new ConfigurationValue<string?>($"Octopus.{configurationSettingsName}.NameClaimType", ConfigurationDocumentStore.GetNameClaimType(), isEnabled && ConfigurationDocumentStore.GetNameClaimType() != OpenIDConnectConfiguration.DefaultNameClaimType, "Name Claim Type");
             yield return new ConfigurationValue<bool>($"Octopus.{configurationSettingsName}.AllowAutoUserCreation", ConfigurationDocumentStore.GetAllowAutoUserCreation(), isEnabled, "Allow auto user creation");
-        }
-
-        public override void BuildMappings(IResourceMappingsBuilder builder)
-        {
-            builder.Map<TResource, TConfiguration>();
         }
     }
 }

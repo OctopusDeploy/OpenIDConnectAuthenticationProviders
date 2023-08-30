@@ -1,4 +1,5 @@
-﻿using Octopus.Data.Storage.Configuration;
+﻿using System;
+using Octopus.Data.Storage.Configuration;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration

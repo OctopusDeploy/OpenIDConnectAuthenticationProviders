@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Octopus.Data.Model;
 using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;

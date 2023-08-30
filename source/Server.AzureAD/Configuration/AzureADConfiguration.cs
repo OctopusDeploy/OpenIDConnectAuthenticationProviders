@@ -1,4 +1,5 @@
-﻿using Octopus.Data.Model;
+using System;
+using Octopus.Data.Model;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Configuration;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
@@ -11,7 +12,6 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Configuration
         {
             RoleClaimType = DefaultRoleClaimType;
         }
-
         public SensitiveString? ClientKey { get; set; }
     }
 }

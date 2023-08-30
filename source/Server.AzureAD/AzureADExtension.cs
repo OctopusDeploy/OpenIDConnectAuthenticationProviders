@@ -1,4 +1,5 @@
-﻿using Autofac;
+using System;
+using Autofac;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Identities;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Infrastructure;
@@ -7,7 +8,6 @@ using Octopus.Server.Extensibility.Authentication.AzureAD.Tokens;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Web;
 using Octopus.Server.Extensibility.Authentication.Extensions;
 using Octopus.Server.Extensibility.Authentication.Extensions.Identities;
-using Octopus.Server.Extensibility.Authentication.OpenIDConnect;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Certificates;
 using Octopus.Server.Extensibility.Authentication.OpenIDConnect.Common.Issuer;
@@ -15,7 +15,6 @@ using Octopus.Server.Extensibility.Extensions;
 using Octopus.Server.Extensibility.Extensions.Infrastructure;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Configuration;
 using Octopus.Server.Extensibility.Extensions.Infrastructure.Web.Content;
-using Octopus.Server.Extensibility.Extensions.Mappings;
 using Octopus.Server.Extensibility.HostServices.Web;
 
 namespace Octopus.Server.Extensibility.Authentication.AzureAD
@@ -31,18 +30,16 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD
 
             builder.RegisterType<AzureADDatabaseInitializer>().As<IExecuteWhenDatabaseInitializes>().InstancePerDependency();
             builder.RegisterType<AzureADPrincipalToUserResourceMapper>().As<IAzureADPrincipalToUserResourceMapper>().InstancePerDependency();
-            builder.RegisterType<AzureADConfigurationMapping>().As<IConfigurationDocumentMapper>().InstancePerDependency();
+            builder.RegisterType<AzureADConfigurationMap>().As<IConfigurationDocumentMap>().InstancePerDependency();
 
             builder.RegisterType<AzureADIdentityCreator>().As<IAzureADIdentityCreator>().SingleInstance();
 
             builder.RegisterType<AzureADConfigurationStore>()
                 .As<IAzureADConfigurationStore>()
                 .InstancePerDependency();
-            builder.RegisterType<AzureADConfigurationSettings>()
+            builder.RegisterType<AzureADConfigurationSettingsProvider>()
                 .As<IAzureADConfigurationSettings>()
-                .As<IHasConfigurationSettings>()
-                .As<IHasConfigurationSettingsResource>()
-                .As<IContributeMappings>()
+                .As<IConfigurationSettingsProvider>()
                 .InstancePerDependency();
             builder.RegisterType<AzureADConfigureCommands>()
                 .As<IContributeToConfigureCommand>()

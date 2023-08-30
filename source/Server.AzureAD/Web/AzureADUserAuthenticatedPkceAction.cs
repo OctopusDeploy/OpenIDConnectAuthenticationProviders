@@ -1,4 +1,4 @@
-﻿using Octopus.Core.Authentication;
+﻿using System;
 using Octopus.Diagnostics;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Configuration;
 using Octopus.Server.Extensibility.Authentication.AzureAD.Identities;
@@ -28,8 +28,9 @@ namespace Octopus.Server.Extensibility.Authentication.AzureAD.Web
             IIdentityProviderConfigDiscoverer identityProviderConfigDiscoverer,
             IMediator mediator,
             IUserService service,
-            IOctopusAuthenticationConfigurationStore authenticationConfigurationStore)
-            : base(log,
+            IAuthenticationConfigurationStore authenticationConfigurationStore)
+            : base(
+                log,
                 authTokenHandler,
                 principalToUserResourceMapper,
                 configurationStore,
